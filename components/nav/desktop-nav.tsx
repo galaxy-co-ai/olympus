@@ -7,6 +7,7 @@ import { Sun, Moon, Globe, Search } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useScrollDirection } from './use-scroll-direction';
 import { NavLink } from './nav-link';
+import { useIsMac } from '@/lib/hooks/useCommandK';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Home' },
@@ -15,6 +16,10 @@ const NAV_ITEMS = [
   { href: '/medals', label: 'Medals' },
   { href: '/stories', label: 'Stories' },
 ];
+
+interface DesktopNavProps {
+  onSearchClick?: () => void;
+}
 
 /**
  * Desktop Navigation Bar (Layer 1)
@@ -26,7 +31,7 @@ const NAV_ITEMS = [
  *
  * Reference: OLYMPUS_CONSTITUTION.md Section 2 (lines 123-271)
  */
-export function DesktopNav() {
+export function DesktopNav({ onSearchClick }: DesktopNavProps) {
   const pathname = usePathname();
   const { scrollDirection, scrollY, isScrolled } = useScrollDirection();
   const { setTheme, resolvedTheme } = useTheme();
@@ -39,6 +44,7 @@ export function DesktopNav() {
 
   // Determine current theme for icon display
   const isDark = resolvedTheme === 'dark';
+  const isMac = useIsMac();
 
   const handleThemeToggle = () => {
     setTheme(isDark ? 'light' : 'dark');
@@ -191,19 +197,25 @@ export function DesktopNav() {
         {/* Search */}
         <button
           className="
-            p-2 rounded-full
+            flex items-center gap-1.5 px-2 py-1.5 rounded-full
             text-[var(--color-text-muted)]
             hover:text-[var(--color-text-primary)]
             hover:bg-[color-mix(in_srgb,var(--country-accent-primary)_4%,transparent)]
             transition-colors
           "
-          aria-label="Search"
-          onClick={() => {
-            // TODO: Wire up cmdk command palette
-            console.log('Search clicked - cmdk coming later');
-          }}
+          aria-label="Search (press Command K)"
+          onClick={onSearchClick}
         >
           <Search size={18} />
+          <span
+            className="px-1.5 py-0.5 rounded text-[10px] tracking-wide"
+            style={{
+              backgroundColor: 'var(--color-bg-secondary)',
+              color: 'var(--color-text-muted)',
+            }}
+          >
+            {isMac ? '⌘K' : 'Ctrl K'}
+          </span>
         </button>
       </div>
     </nav>

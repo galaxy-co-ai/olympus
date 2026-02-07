@@ -14,6 +14,10 @@ const NAV_ITEMS = [
   { href: '/search', label: 'Search', icon: Search },
 ];
 
+interface MobileNavProps {
+  onSearchClick?: () => void;
+}
+
 /**
  * Mobile Navigation Bar (Layer 2)
  *
@@ -25,7 +29,7 @@ const NAV_ITEMS = [
  *
  * Reference: OLYMPUS_CONSTITUTION.md Section 2 (lines 123-271)
  */
-export function MobileNav() {
+export function MobileNav({ onSearchClick }: MobileNavProps) {
   const pathname = usePathname();
   const { scrollDirection, isScrolled } = useScrollDirection();
 
@@ -66,8 +70,7 @@ export function MobileNav() {
                 isSearch
                   ? (e) => {
                       e.preventDefault();
-                      // TODO: Wire up cmdk command palette
-                      console.log('Search clicked - cmdk coming later');
+                      onSearchClick?.();
                     }
                   : undefined
               }

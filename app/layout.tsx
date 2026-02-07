@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider, CountryProvider } from '@/components/theme';
-import { DesktopNav, MobileNav } from '@/components/nav';
+import { NavigationWrapper } from '@/components/nav';
 import './globals.css';
 
 /**
@@ -103,8 +103,7 @@ export default function RootLayout({
             </a>
 
             {/* Navigation - outside main, never unmounts */}
-            <DesktopNav />
-            <MobileNav />
+            <NavigationWrapper />
 
             {/* Main content wrapper */}
             <div className="relative min-h-screen">
