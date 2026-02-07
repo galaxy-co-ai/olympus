@@ -180,7 +180,10 @@ export function MedalTable({ standings, limit }: MedalTableProps) {
   };
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div
+      className="w-full overflow-x-auto"
+      style={{ scrollbarGutter: 'stable' }}
+    >
       <table
         className="w-full border-collapse"
         aria-label="Olympic medal standings"

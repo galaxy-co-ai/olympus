@@ -9,8 +9,45 @@
  * Horizontal row of filter controls.
  */
 
-import { Medal, Heart, X } from 'lucide-react';
+import { Medal, Heart, X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+/**
+ * Styled select wrapper with custom dropdown arrow
+ */
+function StyledSelect({
+  value,
+  onChange,
+  children,
+  className,
+  style,
+  'aria-label': ariaLabel,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement> & { 'aria-label': string }) {
+  return (
+    <div className="relative inline-block">
+      <select
+        value={value}
+        onChange={onChange}
+        className={cn(
+          'appearance-none cursor-pointer pr-8',
+          className
+        )}
+        style={style}
+        aria-label={ariaLabel}
+        {...props}
+      >
+        {children}
+      </select>
+      <ChevronDown
+        size={14}
+        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"
+        style={{ color: 'var(--color-text-muted)' }}
+        aria-hidden="true"
+      />
+    </div>
+  );
+}
 
 interface FilterBarProps {
   sportFilter: string | null;
@@ -55,7 +92,7 @@ export function FilterBar({
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* Sport filter */}
-      <select
+      <StyledSelect
         value={sportFilter || ''}
         onChange={(e) =>
           onSportFilterChange(e.target.value || null)
@@ -87,10 +124,10 @@ export function FilterBar({
             {sport.name}
           </option>
         ))}
-      </select>
+      </StyledSelect>
 
       {/* Venue filter */}
-      <select
+      <StyledSelect
         value={venueFilter || ''}
         onChange={(e) =>
           onVenueFilterChange(e.target.value || null)
@@ -122,7 +159,7 @@ export function FilterBar({
             {venue}
           </option>
         ))}
-      </select>
+      </StyledSelect>
 
       {/* Medal events toggle */}
       <button

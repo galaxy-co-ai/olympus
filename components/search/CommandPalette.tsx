@@ -130,6 +130,12 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               }}
               label="Search Olympics"
               shouldFilter={false} // We handle filtering via Fuse.js
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') {
+                  e.preventDefault();
+                  onOpenChange(false);
+                }
+              }}
             >
               {/* Input */}
               <div
