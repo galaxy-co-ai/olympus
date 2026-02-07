@@ -35,15 +35,16 @@ export function MobileNav() {
   return (
     <nav
       className="
-        fixed bottom-0 left-0 right-0 z-50
+        fixed bottom-0 left-0 right-0 z-[200]
         md:hidden
-        border-t border-[var(--color-border)]
         transition-transform duration-300 ease-out
       "
       style={{
         backgroundColor: 'var(--color-glass-bg)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
+        borderTop: '0.5px solid var(--color-glass-border)',
+        boxShadow: 'var(--color-glass-shadow)',
         paddingBottom: 'env(safe-area-inset-bottom)',
         transform: isHidden ? 'translateY(100%)' : 'translateY(0)',
       }}

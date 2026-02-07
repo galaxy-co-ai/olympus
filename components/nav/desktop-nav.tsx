@@ -19,20 +19,23 @@ const NAV_ITEMS = [
 /**
  * Desktop Navigation Bar (Layer 1)
  *
- * Fixed, glass, pill-shaped navigation that:
+ * Floating glass pill that:
  * - Hides on scroll down, reveals on scroll up
- * - Transitions from transparent to glass when scrolled
+ * - Transitions from transparent (resting) to glass (scrolled)
  * - Has animated active indicator using Framer Motion layoutId
  *
  * Reference: OLYMPUS_CONSTITUTION.md Section 2 (lines 123-271)
  */
 export function DesktopNav() {
   const pathname = usePathname();
-  const { scrollDirection, isScrolled } = useScrollDirection();
+  const { scrollDirection, scrollY, isScrolled } = useScrollDirection();
   const { setTheme, resolvedTheme } = useTheme();
 
-  // Hide when scrolling down, show when scrolling up
+  // Hide when scrolling down and past threshold
   const isHidden = scrollDirection === 'down' && isScrolled;
+
+  // Resting state: scrollY < 20 — fully transparent, relaxed padding
+  const isResting = scrollY < 20;
 
   // Determine current theme for icon display
   const isDark = resolvedTheme === 'dark';
@@ -44,30 +47,37 @@ export function DesktopNav() {
   return (
     <nav
       className="
-        fixed top-4 left-1/2 z-50 -translate-x-1/2
-        hidden md:flex items-center gap-1
-        rounded-full border border-[var(--color-border)]
+        fixed top-4 left-1/2 z-[200]
+        hidden md:flex items-center justify-between
+        max-w-[960px] w-auto
+        rounded-full
         transition-all duration-300 ease-out
       "
       style={{
-        backgroundColor: isScrolled
-          ? 'var(--color-glass-bg)'
-          : 'transparent',
-        backdropFilter: isScrolled ? 'blur(16px)' : 'none',
-        WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'none',
-        padding: isScrolled ? '0.5rem 1rem' : '0.75rem 1.25rem',
+        // Position: centered with transform
         transform: `translateX(-50%) translateY(${isHidden ? '-120%' : '0'})`,
-        borderColor: isScrolled
-          ? 'var(--color-border)'
-          : 'transparent',
+
+        // Padding: relaxed when resting, tighter when scrolled
+        padding: isResting ? '12px 20px' : '8px 16px',
+
+        // Glass material: only when scrolled past resting
+        backgroundColor: isResting ? 'transparent' : 'var(--color-glass-bg)',
+        backdropFilter: isResting ? 'none' : 'blur(16px)',
+        WebkitBackdropFilter: isResting ? 'none' : 'blur(16px)',
+
+        // Border: invisible when resting
+        border: isResting ? '1px solid transparent' : '1px solid var(--color-glass-border)',
+
+        // Shadow: only when scrolled
+        boxShadow: isResting ? 'none' : 'var(--color-glass-shadow)',
       }}
       aria-label="Main navigation"
     >
-      {/* Logo */}
+      {/* Left: Logo */}
       <Link
         href="/"
         className="
-          mr-4 font-semibold tracking-tight
+          font-semibold tracking-tight
           text-[var(--color-text-primary)]
           hover:text-[var(--country-accent-primary)]
           transition-colors
@@ -77,24 +87,37 @@ export function DesktopNav() {
         Olympus
       </Link>
 
-      {/* Center nav links */}
-      <div className="relative flex items-center gap-1">
+      {/* Center: Nav links */}
+      <div className="relative flex items-center gap-1 mx-8">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <div key={item.href} className="relative">
+            <div key={item.href} className="relative group">
               {/* Active indicator - Framer Motion layoutId */}
               {isActive && (
                 <motion.div
                   layoutId="nav-indicator"
                   className="absolute inset-0 rounded-full"
                   style={{
-                    backgroundColor: 'color-mix(in srgb, var(--country-accent-primary) 12%, transparent)',
+                    backgroundColor: 'color-mix(in srgb, var(--country-accent-primary) 8%, transparent)',
                   }}
                   transition={{
                     type: 'spring',
                     stiffness: 500,
                     damping: 30,
+                  }}
+                />
+              )}
+              {/* Hover indicator for non-active items */}
+              {!isActive && (
+                <div
+                  className="
+                    absolute inset-0 rounded-full
+                    opacity-0 group-hover:opacity-100
+                    transition-opacity duration-150
+                  "
+                  style={{
+                    backgroundColor: 'color-mix(in srgb, var(--country-accent-primary) 4%, transparent)',
                   }}
                 />
               )}
@@ -118,8 +141,8 @@ export function DesktopNav() {
         })}
       </div>
 
-      {/* Right actions */}
-      <div className="ml-4 flex items-center gap-2">
+      {/* Right: Actions */}
+      <div className="flex items-center gap-1">
         {/* Theme toggle */}
         <button
           onClick={handleThemeToggle}
@@ -127,7 +150,7 @@ export function DesktopNav() {
             p-2 rounded-full
             text-[var(--color-text-muted)]
             hover:text-[var(--color-text-primary)]
-            hover:bg-[var(--color-surface-secondary)]
+            hover:bg-[color-mix(in_srgb,var(--country-accent-primary)_4%,transparent)]
             transition-colors
           "
           aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -141,7 +164,7 @@ export function DesktopNav() {
             p-2 rounded-full
             text-[var(--color-text-muted)]
             hover:text-[var(--color-text-primary)]
-            hover:bg-[var(--color-surface-secondary)]
+            hover:bg-[color-mix(in_srgb,var(--country-accent-primary)_4%,transparent)]
             transition-colors
           "
           aria-label="Select country (coming soon)"
@@ -156,7 +179,7 @@ export function DesktopNav() {
             p-2 rounded-full
             text-[var(--color-text-muted)]
             hover:text-[var(--color-text-primary)]
-            hover:bg-[var(--color-surface-secondary)]
+            hover:bg-[color-mix(in_srgb,var(--country-accent-primary)_4%,transparent)]
             transition-colors
           "
           aria-label="Search"

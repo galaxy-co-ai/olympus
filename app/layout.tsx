@@ -108,8 +108,12 @@ export default function RootLayout({
 
             {/* Main content wrapper */}
             <div className="relative min-h-screen">
-              {/* Bottom padding for mobile nav spacing */}
-              <main id="main-content" className="pb-20 md:pb-0">
+              {/*
+                Padding accounts for fixed navigation:
+                - Mobile: pb-20 for bottom tab bar
+                - Desktop: pt-24 for floating nav (16px top + ~56px nav height + buffer)
+              */}
+              <main id="main-content" className="pb-20 md:pb-0 md:pt-24">
                 {children}
               </main>
             </div>
