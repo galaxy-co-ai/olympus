@@ -28,4 +28,7 @@ export {
   getTodaysEvents,
   getLiveEvents,
   getUpcomingMedalEvents,
+  getUniqueVenues,
+  getUniqueSports,
+  getEventCountByDate,
 } from './schedule';
