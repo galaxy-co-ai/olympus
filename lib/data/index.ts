@@ -1,7 +1,31 @@
 /**
- * Static Data Barrel Export
+ * Data Layer Barrel Export
  *
  * Reference: OLYMPUS_CONSTITUTION.md Section III lines 1159-1167
  */
 
-export { sports, getSportById, getSportBySlug, getSportsByCategory } from './sports';
+export {
+  SPORTS,
+  getSportById,
+  getSportsByStatus,
+  getSportsByCategory,
+  getLiveSports,
+  getUpcomingSports,
+} from './sports';
+
+export {
+  MEDAL_STANDINGS,
+  sortStandings,
+  getStandingsWithRanks,
+  getTopCountries,
+  getTotalMedals,
+} from './medals';
+
+export {
+  SCHEDULE,
+  getEventsByDate,
+  getEventsBySport,
+  getTodaysEvents,
+  getLiveEvents,
+  getUpcomingMedalEvents,
+} from './schedule';

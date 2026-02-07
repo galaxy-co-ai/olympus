@@ -1,216 +1,295 @@
 /**
- * Static Sports Data
+ * Live Sports Data — Day 2 (February 7, 2026)
  *
  * Reference: OLYMPUS_CONSTITUTION.md
  * - Section V: Content Reference (lines 1205-1227)
  * - Section 4: Sport Cards (lines 755-776)
+ *
+ * Status reflects Day 2 of the Games (Feb 7, 2026):
+ * - Several early events completed (Biathlon, Speed Skating, Short Track heats)
+ * - 1-2 sports currently live
+ * - Most events still upcoming
  */
 
-import type { Sport } from '@/lib/types';
+import { LiveSportSchema, type LiveSport } from '@/lib/types/olympics';
 
-export const sports: Sport[] = [
+export const SPORTS: LiveSport[] = [
   {
     id: 'alpine-skiing',
     name: 'Alpine Skiing',
-    slug: 'alpine-skiing',
+    icon: 'mountain-snow',
     venue: 'Tofane Centre / Stelvio',
     territory: 'Cortina / Bormio',
-    eventCount: 11,
-    isDebut: false,
     category: 'dynamic',
-    description:
-      'Racing down groomed snow runs, athletes compete for the fastest time in events including downhill, slalom, giant slalom, super-G, and combined.',
+    totalEvents: 11,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Men's Downhill Training",
+    nextEventTime: '2026-02-08T10:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'biathlon',
     name: 'Biathlon',
-    slug: 'biathlon',
+    icon: 'target',
     venue: 'Anterselva Arena',
     territory: 'Anterselva',
-    eventCount: 11,
-    isDebut: false,
     category: 'precision',
-    description:
-      'A demanding combination of cross-country skiing and rifle shooting, testing both endurance and precision under pressure.',
+    totalEvents: 11,
+    completedEvents: 1,
+    status: 'live',
+    currentEvent: "Women's 7.5km Sprint",
+    nextEvent: "Men's 10km Sprint",
+    nextEventTime: '2026-02-07T14:30:00+01:00',
+    medals: { gold: 1, silver: 1, bronze: 1 },
   },
   {
     id: 'bobsleigh',
     name: 'Bobsleigh',
-    slug: 'bobsleigh',
+    icon: 'tram-front',
     venue: 'Cortina Sliding Centre',
     territory: 'Cortina',
-    eventCount: 4,
-    isDebut: false,
     category: 'dynamic',
-    description:
-      'Teams of two or four navigate a narrow, twisting ice track at speeds exceeding 150 km/h in a gravity-powered sled.',
+    totalEvents: 4,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Women's Monobob Run 1",
+    nextEventTime: '2026-02-10T09:30:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'cross-country-skiing',
     name: 'Cross-Country Skiing',
-    slug: 'cross-country-skiing',
+    icon: 'trees',
     venue: 'Tesero Stadium',
     territory: 'Tesero',
-    eventCount: 12,
-    isDebut: false,
     category: 'endurance',
-    description:
-      'The ultimate test of cardiovascular endurance, athletes race over varied terrain using either classic or skating technique.',
+    totalEvents: 12,
+    completedEvents: 1,
+    status: 'completed',
+    currentEvent: null,
+    nextEvent: "Women's Sprint Qualification",
+    nextEventTime: '2026-02-08T11:00:00+01:00',
+    medals: { gold: 1, silver: 1, bronze: 1 },
   },
   {
     id: 'curling',
     name: 'Curling',
-    slug: 'curling',
+    icon: 'circle-dot',
     venue: 'Cortina Curling Stadium',
     territory: 'Cortina',
-    eventCount: 3,
-    isDebut: false,
     category: 'precision',
-    description:
-      'Teams slide polished granite stones across ice toward a target, using strategic sweeping to control speed and curl.',
+    totalEvents: 3,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: 'Mixed Doubles Round Robin',
+    nextEventTime: '2026-02-08T09:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'figure-skating',
     name: 'Figure Skating',
-    slug: 'figure-skating',
+    icon: 'sparkles',
     venue: 'Milano Ice Skating Arena',
     territory: 'Milano',
-    eventCount: 5,
-    isDebut: false,
     category: 'precision',
-    description:
-      'Athletes perform jumps, spins, and intricate footwork to music, judged on both technical elements and artistic presentation.',
+    totalEvents: 5,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: 'Team Event Short Program',
+    nextEventTime: '2026-02-08T10:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'freestyle-skiing',
     name: 'Freestyle Skiing',
-    slug: 'freestyle-skiing',
+    icon: 'wind',
     venue: 'Livigno Snow Park / Aerials Park',
     territory: 'Livigno',
-    eventCount: 13,
-    isDebut: false,
     category: 'style',
-    description:
-      'Acrobatic skiing featuring aerials, moguls, halfpipe, slopestyle, and ski cross—where style meets athleticism.',
+    totalEvents: 13,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Men's Moguls Qualification",
+    nextEventTime: '2026-02-07T18:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'ice-hockey',
     name: 'Ice Hockey',
-    slug: 'ice-hockey',
+    icon: 'circle',
     venue: 'Santagiulia Arena / Rho Arena',
     territory: 'Milano',
-    eventCount: 2,
-    isDebut: false,
     category: 'team',
-    description:
-      'Fast-paced team sport where players use sticks to shoot a puck into the opponent\'s goal while skating at high speeds.',
+    totalEvents: 2,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Women's Preliminary Round",
+    nextEventTime: '2026-02-08T12:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'luge',
     name: 'Luge',
-    slug: 'luge',
+    icon: 'arrow-down-wide-narrow',
     venue: 'Cortina Sliding Centre',
     territory: 'Cortina',
-    eventCount: 4,
-    isDebut: false,
     category: 'dynamic',
-    description:
-      'Athletes race feet-first on a small sled, navigating an icy track using subtle body movements at speeds over 140 km/h.',
+    totalEvents: 4,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Men's Singles Run 1",
+    nextEventTime: '2026-02-08T10:30:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'nordic-combined',
     name: 'Nordic Combined',
-    slug: 'nordic-combined',
+    icon: 'mountain',
     venue: 'Predazzo / Tesero',
     territory: 'Predazzo / Tesero',
-    eventCount: 3,
-    isDebut: false,
     category: 'endurance',
-    description:
-      'A unique combination of ski jumping and cross-country skiing, testing both aerial skill and endurance.',
+    totalEvents: 3,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Men's Individual Normal Hill",
+    nextEventTime: '2026-02-11T10:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'short-track',
-    name: 'Short Track Speed Skating',
-    slug: 'short-track',
+    name: 'Short Track',
+    icon: 'timer',
     venue: 'Milano Ice Skating Arena',
     territory: 'Milano',
-    eventCount: 9,
-    isDebut: false,
     category: 'style',
-    description:
-      'Pack-style racing on a 111-meter oval, featuring tight turns, strategic positioning, and thrilling photo finishes.',
+    totalEvents: 9,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: 'Mixed Team Relay Heats',
+    nextEventTime: '2026-02-07T19:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'skeleton',
     name: 'Skeleton',
-    slug: 'skeleton',
+    icon: 'arrow-down',
     venue: 'Cortina Sliding Centre',
     territory: 'Cortina',
-    eventCount: 2,
-    isDebut: false,
     category: 'dynamic',
-    description:
-      'Athletes race head-first on a small sled, their faces just inches from the ice at speeds exceeding 130 km/h.',
+    totalEvents: 2,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Men's Skeleton Run 1",
+    nextEventTime: '2026-02-12T09:30:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'ski-jumping',
     name: 'Ski Jumping',
-    slug: 'ski-jumping',
+    icon: 'plane-takeoff',
     venue: 'Predazzo Stadium',
     territory: 'Predazzo',
-    eventCount: 5,
-    isDebut: false,
     category: 'precision',
-    description:
-      'Athletes launch from a steep ramp, flying through the air and landing with style, judged on distance and technique.',
+    totalEvents: 5,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Women's Normal Hill Qualification",
+    nextEventTime: '2026-02-07T16:30:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'ski-mountaineering',
     name: 'Ski Mountaineering',
-    slug: 'ski-mountaineering',
+    icon: 'mountain-snow',
     venue: 'Stelvio Ski Centre',
     territory: 'Bormio',
-    eventCount: 6,
-    isDebut: true, // Olympic debut!
     category: 'endurance',
-    description:
-      'Making its Olympic debut, this grueling sport combines climbing and skiing through mountain terrain in a race against the clock.',
+    totalEvents: 6,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: 'Mixed Relay',
+    nextEventTime: '2026-02-10T09:00:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'snowboard',
     name: 'Snowboard',
-    slug: 'snowboard',
+    icon: 'snowflake',
     venue: 'Livigno Snow Park',
     territory: 'Livigno',
-    eventCount: 11,
-    isDebut: false,
     category: 'style',
-    description:
-      'From halfpipe to big air to snowboard cross, riders showcase aerial tricks, speed, and style on a single board.',
+    totalEvents: 11,
+    completedEvents: 0,
+    status: 'upcoming',
+    currentEvent: null,
+    nextEvent: "Women's Slopestyle Qualification",
+    nextEventTime: '2026-02-08T09:30:00+01:00',
+    medals: { gold: 0, silver: 0, bronze: 0 },
   },
   {
     id: 'speed-skating',
     name: 'Speed Skating',
-    slug: 'speed-skating',
+    icon: 'gauge',
     venue: 'Milano Speed Skating Stadium',
     territory: 'Milano',
-    eventCount: 14,
-    isDebut: false,
     category: 'dynamic',
-    description:
-      'Athletes race around a 400-meter oval, reaching speeds over 60 km/h in pursuit of the fastest time.',
+    totalEvents: 14,
+    completedEvents: 1,
+    status: 'completed',
+    currentEvent: null,
+    nextEvent: "Women's 3000m",
+    nextEventTime: '2026-02-08T16:00:00+01:00',
+    medals: { gold: 1, silver: 1, bronze: 1 },
   },
 ];
 
-export function getSportById(id: string): Sport | undefined {
-  return sports.find((s) => s.id === id);
+// Validate at module load in development
+if (process.env.NODE_ENV === 'development') {
+  SPORTS.forEach((sport, index) => {
+    const result = LiveSportSchema.safeParse(sport);
+    if (!result.success) {
+      console.error(`Sport validation failed at index ${index}:`, result.error);
+    }
+  });
 }
 
-export function getSportBySlug(slug: string): Sport | undefined {
-  return sports.find((s) => s.slug === slug);
+export function getSportById(id: string): LiveSport | undefined {
+  return SPORTS.find((s) => s.id === id);
 }
 
-export function getSportsByCategory(category: Sport['category']): Sport[] {
-  return sports.filter((s) => s.category === category);
+export function getSportsByStatus(status: LiveSport['status']): LiveSport[] {
+  return SPORTS.filter((s) => s.status === status);
+}
+
+export function getSportsByCategory(
+  category: LiveSport['category']
+): LiveSport[] {
+  return SPORTS.filter((s) => s.category === category);
+}
+
+export function getLiveSports(): LiveSport[] {
+  return SPORTS.filter((s) => s.status === 'live');
+}
+
+export function getUpcomingSports(): LiveSport[] {
+  return SPORTS.filter((s) => s.status === 'upcoming').sort((a, b) => {
+    if (!a.nextEventTime) return 1;
+    if (!b.nextEventTime) return -1;
+    return (
+      new Date(a.nextEventTime).getTime() - new Date(b.nextEventTime).getTime()
+    );
+  });
 }
