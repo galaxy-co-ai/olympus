@@ -511,7 +511,7 @@ html {
   font-variant-numeric: tabular-nums;
 
   /* Prevent layout shift when scrollbar appears/disappears */
-  scrollbar-gutter: stable;
+  overflow-y: scroll;
 }
 
 body {
