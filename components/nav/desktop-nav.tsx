@@ -44,39 +44,50 @@ export function DesktopNav() {
     setTheme(isDark ? 'light' : 'dark');
   };
 
+  // Glass opacity based on scroll state
+  const glassBg = isDark
+    ? isResting ? 'rgba(26, 24, 22, 0.6)' : 'rgba(26, 24, 22, 0.8)'
+    : isResting ? 'rgba(247, 246, 243, 0.6)' : 'rgba(247, 246, 243, 0.85)';
+
+  const glassBorder = isDark
+    ? isResting ? 'rgba(255, 255, 255, 0.08)' : 'rgba(255, 255, 255, 0.12)'
+    : isResting ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.1)';
+
   return (
     <nav
       className="
-        fixed top-4 left-4 right-4 z-[200]
+        fixed z-[200]
         hidden md:flex items-center justify-between
-        max-w-[960px] mx-auto
-        rounded-full
         transition-all duration-300 ease-out
       "
       style={{
-        // Border radius: full pill
-        borderRadius: '100vw',
+        // Position: 16px from top, centered with side margins
+        top: '16px',
+        left: '16px',
+        right: '16px',
+        maxWidth: '960px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
 
-        // Hide/reveal transform
-        transform: isHidden ? 'translateY(-120%)' : 'translateY(0)',
+        // Pill shape
+        borderRadius: '9999px',
 
-        // Padding: relaxed when resting, tighter when scrolled
-        padding: isResting ? '12px 20px' : '10px 16px',
+        // Hide/reveal
+        transform: isHidden ? 'translateY(calc(-100% - 32px))' : 'translateY(0)',
 
-        // Glass material: subtle at rest, intensified when scrolled
-        backgroundColor: isResting
-          ? 'var(--color-glass-bg-subtle)'
-          : 'var(--color-glass-bg)',
-        backdropFilter: isResting ? 'blur(12px)' : 'blur(16px)',
-        WebkitBackdropFilter: isResting ? 'blur(12px)' : 'blur(16px)',
+        // Padding
+        padding: isResting ? '14px 24px' : '12px 20px',
 
-        // Border: always visible, intensifies when scrolled
-        border: isResting
-          ? '1px solid var(--color-glass-border-subtle)'
-          : '1px solid var(--color-glass-border)',
+        // Glass material - ALWAYS visible
+        backgroundColor: glassBg,
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
 
-        // Shadow: always present
-        boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04)',
+        // Border
+        border: `1px solid ${glassBorder}`,
+
+        // Shadow
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.08)',
       }}
       aria-label="Main navigation"
     >
