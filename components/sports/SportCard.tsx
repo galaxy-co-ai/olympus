@@ -237,25 +237,25 @@ export function SportCard({ sport, featured = false }: SportCardProps) {
 
       {/* Card content */}
       <div className="relative z-10 flex flex-1 flex-col p-4">
-        {/* Layer 2: Sport Icon */}
-        <div
-          className={cn(
-            'mb-3 transition-transform duration-150',
-            '@media(hover:hover):group-hover:-translate-y-0.5'
-          )}
-        >
-          {Icon && (
-            <span style={{ color: 'var(--country-accent-primary)' }}>
-              <Icon
-                size={featured ? 48 : 40}
-                className="transition-all duration-150"
-              />
-            </span>
-          )}
-        </div>
+        {/* Layer 2 + 3: Icon and Title (horizontal) */}
+        <div className="flex items-start gap-3">
+          {/* Sport Icon */}
+          <div
+            className={cn(
+              'shrink-0 transition-transform duration-150',
+              '@media(hover:hover):group-hover:-translate-y-0.5'
+            )}
+          >
+            {Icon && (
+              <span style={{ color: 'var(--country-accent-primary)' }}>
+                <Icon
+                  size={featured ? 28 : 22}
+                  className="transition-all duration-150"
+                />
+              </span>
+            )}
+          </div>
 
-        {/* Layer 3: Information Stack */}
-        <div className="flex flex-1 flex-col">
           {/* Sport name */}
           <h3
             className={cn(
@@ -271,25 +271,25 @@ export function SportCard({ sport, featured = false }: SportCardProps) {
           >
             {sport.name}
           </h3>
+        </div>
 
-          {/* Status badge */}
-          <div className="mt-2">
-            <StatusBadge sport={sport} />
-          </div>
+        {/* Status badge */}
+        <div className="mt-3">
+          <StatusBadge sport={sport} />
+        </div>
 
-          {/* Spacer */}
-          <div className="flex-1" />
+        {/* Spacer */}
+        <div className="flex-1" />
 
-          {/* Venue tag */}
-          <div
-            className="mt-3"
-            style={{
-              fontSize: 'var(--text-small)',
-              color: 'var(--color-text-muted)',
-            }}
-          >
-            {sport.territory}
-          </div>
+        {/* Venue tag */}
+        <div
+          className="mt-3"
+          style={{
+            fontSize: 'var(--text-small)',
+            color: 'var(--color-text-muted)',
+          }}
+        >
+          {sport.territory}
         </div>
       </div>
 
