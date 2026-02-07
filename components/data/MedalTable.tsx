@@ -202,6 +202,8 @@ export function MedalTable({ standings, limit }: MedalTableProps) {
                     : 'descending'
                   : 'none'
               }
+              aria-label="Sort by rank"
+              role="columnheader button"
             >
               <div
                 className="flex items-center gap-1"
@@ -242,6 +244,8 @@ export function MedalTable({ standings, limit }: MedalTableProps) {
                     : 'descending'
                   : 'none'
               }
+              aria-label="Sort by gold medals"
+              role="columnheader button"
             >
               <div
                 className="flex items-center justify-center gap-1"
@@ -270,6 +274,8 @@ export function MedalTable({ standings, limit }: MedalTableProps) {
                     : 'descending'
                   : 'none'
               }
+              aria-label="Sort by silver medals"
+              role="columnheader button"
             >
               <div
                 className="flex items-center justify-center gap-1"
@@ -298,6 +304,8 @@ export function MedalTable({ standings, limit }: MedalTableProps) {
                     : 'descending'
                   : 'none'
               }
+              aria-label="Sort by bronze medals"
+              role="columnheader button"
             >
               <div
                 className="flex items-center justify-center gap-1"
@@ -326,6 +334,8 @@ export function MedalTable({ standings, limit }: MedalTableProps) {
                     : 'descending'
                   : 'none'
               }
+              aria-label="Sort by total medals"
+              role="columnheader button"
             >
               <div
                 className="flex items-center justify-center gap-1"

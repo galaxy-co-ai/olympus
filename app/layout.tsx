@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider, CountryProvider } from '@/components/theme';
 import { NavigationWrapper } from '@/components/nav';
+import { Footer } from '@/components/footer';
+import { ToastProvider } from '@/components/ui';
+import { SkiJumper } from '@/components/easter-egg';
 import './globals.css';
 
 /**
@@ -97,25 +100,33 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans`}>
         <ThemeProvider>
           <CountryProvider>
-            {/* Skip to content link — first focusable element per Section 2 line 251 */}
-            <a href="#main-content" className="skip-to-content">
-              Skip to content
-            </a>
+            <ToastProvider>
+              {/* Skip to content link — first focusable element per Section 2 line 251 */}
+              <a href="#main-content" className="skip-to-content">
+                Skip to content
+              </a>
 
-            {/* Navigation - outside main, never unmounts */}
-            <NavigationWrapper />
+              {/* Navigation - outside main, never unmounts */}
+              <NavigationWrapper />
 
-            {/* Main content wrapper */}
-            <div className="relative min-h-screen">
-              {/*
-                Padding accounts for fixed navigation:
-                - Mobile: pb-20 for bottom tab bar
-                - Desktop: pt-24 for floating nav (16px top + ~56px nav height + buffer)
-              */}
-              <main id="main-content" className="pb-20 md:pb-0 md:pt-24">
-                {children}
-              </main>
-            </div>
+              {/* Main content wrapper */}
+              <div className="relative min-h-screen flex flex-col">
+                {/*
+                  Padding accounts for fixed navigation:
+                  - Mobile: pb-20 for bottom tab bar
+                  - Desktop: pt-24 for floating nav (16px top + ~56px nav height + buffer)
+                */}
+                <main id="main-content" className="flex-1 pb-20 md:pb-0 md:pt-24">
+                  {children}
+                </main>
+
+                {/* Footer */}
+                <Footer />
+              </div>
+
+              {/* Konami code easter egg */}
+              <SkiJumper />
+            </ToastProvider>
           </CountryProvider>
         </ThemeProvider>
       </body>

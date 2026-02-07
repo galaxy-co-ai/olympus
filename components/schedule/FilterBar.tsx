@@ -147,6 +147,7 @@ export function FilterBar({
           '--tw-ring-color': 'var(--color-gold)',
         }}
         aria-pressed={medalEventsOnly}
+        aria-label={medalEventsOnly ? 'Show all events' : 'Show medal events only'}
       >
         <Medal size={14} />
         <span className="hidden sm:inline">Medal Events</span>
@@ -171,6 +172,7 @@ export function FilterBar({
           '--tw-ring-color': '#EF4444',
         }}
         aria-pressed={favoritesOnly}
+        aria-label={favoritesOnly ? 'Show all events' : 'Show favorites only'}
       >
         <Heart size={14} className={favoritesOnly ? 'fill-red-500' : ''} />
         <span className="hidden sm:inline">Favorites</span>

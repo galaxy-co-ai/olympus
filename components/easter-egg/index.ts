@@ -1,0 +1,1 @@
+export { SkiJumper } from './SkiJumper';
