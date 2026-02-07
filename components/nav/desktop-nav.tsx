@@ -47,29 +47,36 @@ export function DesktopNav() {
   return (
     <nav
       className="
-        fixed top-4 left-1/2 z-[200]
+        fixed top-4 left-4 right-4 z-[200]
         hidden md:flex items-center justify-between
-        max-w-[960px] w-auto
+        max-w-[960px] mx-auto
         rounded-full
         transition-all duration-300 ease-out
       "
       style={{
-        // Position: centered with transform
-        transform: `translateX(-50%) translateY(${isHidden ? '-120%' : '0'})`,
+        // Border radius: full pill
+        borderRadius: '100vw',
+
+        // Hide/reveal transform
+        transform: isHidden ? 'translateY(-120%)' : 'translateY(0)',
 
         // Padding: relaxed when resting, tighter when scrolled
-        padding: isResting ? '12px 20px' : '8px 16px',
+        padding: isResting ? '12px 20px' : '10px 16px',
 
-        // Glass material: only when scrolled past resting
-        backgroundColor: isResting ? 'transparent' : 'var(--color-glass-bg)',
-        backdropFilter: isResting ? 'none' : 'blur(16px)',
-        WebkitBackdropFilter: isResting ? 'none' : 'blur(16px)',
+        // Glass material: subtle at rest, intensified when scrolled
+        backgroundColor: isResting
+          ? 'var(--color-glass-bg-subtle)'
+          : 'var(--color-glass-bg)',
+        backdropFilter: isResting ? 'blur(12px)' : 'blur(16px)',
+        WebkitBackdropFilter: isResting ? 'blur(12px)' : 'blur(16px)',
 
-        // Border: invisible when resting
-        border: isResting ? '1px solid transparent' : '1px solid var(--color-glass-border)',
+        // Border: always visible, intensifies when scrolled
+        border: isResting
+          ? '1px solid var(--color-glass-border-subtle)'
+          : '1px solid var(--color-glass-border)',
 
-        // Shadow: only when scrolled
-        boxShadow: isResting ? 'none' : 'var(--color-glass-shadow)',
+        // Shadow: always present
+        boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04)',
       }}
       aria-label="Main navigation"
     >

@@ -93,8 +93,10 @@
   --color-surface-active: rgba(232, 196, 184, 0.12);
 
   /* Glass material for navigation */
-  --color-glass-bg: rgba(255, 255, 255, 0.8);
-  --color-glass-border: rgba(0, 0, 0, 0.06);
+  --color-glass-bg: rgba(247, 246, 243, 0.75);
+  --color-glass-bg-subtle: rgba(247, 246, 243, 0.5);
+  --color-glass-border: rgba(0, 0, 0, 0.08);
+  --color-glass-border-subtle: rgba(0, 0, 0, 0.04);
   --color-glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
 
   /* Focus ring color */
@@ -199,8 +201,10 @@
   --color-surface-active: rgba(123, 167, 194, 0.10);
 
   /* Glass material — dark mode */
-  --color-glass-bg: rgba(26, 24, 22, 0.85);
-  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-bg: rgba(26, 24, 22, 0.75);
+  --color-glass-bg-subtle: rgba(26, 24, 22, 0.5);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --color-glass-border-subtle: rgba(255, 255, 255, 0.05);
   --color-glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
 
   --color-focus-ring: #8FBDD4;
