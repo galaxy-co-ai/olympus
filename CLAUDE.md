@@ -29,6 +29,50 @@ The full specification lives in `OLYMPUS_CONSTITUTION.md` (~1,560 lines). Refere
 - **cmdk** for command palette
 - **next-themes** for dark/light mode
 
+## Workspace Shell Architecture
+
+The app uses a Linear/Arc style workspace shell. The shell never unmounts; content swaps in CenterStage.
+
+### 4-Zone Grid Layout
+
+```
+┌─────────────────────────────────────────────────┐
+│                    TopBar (56px)                │
+├────────────┬─────────────────────┬──────────────┤
+│  Sidebar   │    CenterStage      │  RightDrawer │
+│  (240/64px)│    (flexible)       │   (360/0px)  │
+└────────────┴─────────────────────┴──────────────┘
+```
+
+### Key Files
+
+```
+lib/stores/shell-store.ts       # Zustand state (sidebar, drawer, search)
+components/shell/
+  WorkspaceShell.tsx            # CSS Grid container + responsive layouts
+  TopBar.tsx                    # Breadcrumb + search + controls
+  Sidebar.tsx                   # Icon-driven nav, collapsible
+  SidebarItem.tsx               # Nav item with layoutId active pill
+  CenterStage.tsx               # Content viewport with route transitions
+  RightDrawer.tsx               # 3-tab drawer (Feed/Schedule/Medals)
+  MobileTopBar.tsx              # Mobile header
+  MobileSidebarOverlay.tsx      # Sidebar overlay for mobile
+  MobileBottomSheet.tsx         # Drawer as bottom sheet for mobile
+```
+
+### Keyboard Shortcuts
+
+- `⌘K` / `Ctrl+K`: Open command palette
+- `⌘B` / `Ctrl+B`: Toggle sidebar
+- `⌘\` / `Ctrl+\`: Toggle drawer
+- `⌘.` / `Ctrl+.`: Toggle drawer (alternative)
+
+### Responsive Breakpoints
+
+- `<768px` (mobile): Sidebar overlay, drawer as bottom sheet
+- `768-1024px` (tablet): Drawer overlays with scrim
+- `>1024px` (desktop): Full CSS Grid
+
 ## Critical Patterns
 
 ### Theme Switching (Rauno's Rule)
@@ -51,22 +95,26 @@ Country selection applies `data-country="xxx"` to `:root`. CSS handles all color
 - `@media (hover: hover)` for hover states
 - Touch targets >= 44px
 - `prefers-reduced-motion` respected
+- ARIA roles on shell zones (banner, navigation, main)
 
 ## File Structure
 
 ```
 app/                    # Routes
 components/
+  shell/                # Workspace shell (TopBar, Sidebar, CenterStage, etc.)
   ui/                   # Primitives (Button, Card, etc.)
-  nav/                  # Navigation components
+  nav/                  # Legacy nav utilities (NavLink, useScrollDirection)
   theme/                # ThemeProvider, CountryProvider
   sports/               # Sport cards, detail views
   data/                 # Charts, medal tracker
+  search/               # CommandPalette, SearchResults
 lib/
+  stores/               # Zustand stores (shell-store)
   data/                 # Static Olympic data
   types/                # Zod schemas + TypeScript types
   utils/                # cn(), formatters
-  hooks/                # Custom hooks
+  hooks/                # Custom hooks (useCommandK, useShellShortcuts, etc.)
 ```
 
 ## Gotchas
@@ -75,6 +123,8 @@ lib/
 2. **next-themes** must use `attribute="data-theme"` to match our CSS
 3. **Inter** loads via next/font — use `--font-inter` CSS variable
 4. **Country codes** are ISO 3166-1 alpha-3 lowercase (usa, nor, jpn, etc.)
+5. **Shell never unmounts** — routes swap in CenterStage, shell stays static
+6. **Drawer content components** (DrawerFeed, DrawerSchedule, DrawerMedals) are adapted from home panels
 
 ## Commands
 
@@ -98,7 +148,17 @@ pnpm typecheck # TypeScript check (add to scripts)
 - [x] Route placeholders
 - [x] Zod schemas for data types
 
+**Shell Complete:**
+- [x] WorkspaceShell with CSS Grid layout
+- [x] TopBar with breadcrumb, search, controls
+- [x] Sidebar with collapsible nav and layoutId animations
+- [x] CenterStage with AnimatePresence route transitions
+- [x] RightDrawer with 3 tabs (Feed/Schedule/Medals)
+- [x] Mobile sidebar overlay
+- [x] Mobile bottom sheet drawer
+- [x] Keyboard shortcuts (⌘K, ⌘B, ⌘\)
+- [x] Zustand store with localStorage persistence
+
 **Next Up:**
-- [ ] Navigation (Section 2)
 - [ ] Hero (Section 1)
 - [ ] Sport cards (Section 4)

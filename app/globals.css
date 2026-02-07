@@ -172,6 +172,13 @@
   --z-modal: 300;
   --z-tooltip: 400;
   --z-max: 9999;
+
+  /* ===== Shell Layout Tokens ===== */
+
+  --shell-topbar-height: 56px;
+  --shell-sidebar-width: 240px;
+  --shell-sidebar-collapsed: 64px;
+  --shell-drawer-width: 360px;
 }
 
 /* -----------------------------------------------------------------------------

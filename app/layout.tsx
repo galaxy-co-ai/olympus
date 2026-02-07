@@ -1,8 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider, CountryProvider } from '@/components/theme';
-import { NavigationWrapper } from '@/components/nav';
-import { Footer } from '@/components/footer';
+import { WorkspaceShell } from '@/components/shell';
 import { ToastProvider } from '@/components/ui';
 import { SkiJumper } from '@/components/easter-egg';
 import './globals.css';
@@ -14,6 +13,11 @@ import './globals.css';
  * - Section III: Technical Constitution (lines 1088-1168)
  * - Section 11: Typography System (lines 1008-1045)
  * - Section I: Quality Bar (lines 39-90)
+ *
+ * Architecture:
+ * - WorkspaceShell provides the 4-zone grid layout
+ * - Shell never unmounts; routes render in CenterStage
+ * - CommandPalette lives inside WorkspaceShell
  *
  * Fonts:
  * - Inter Variable for body text, UI elements, data
@@ -106,23 +110,10 @@ export default function RootLayout({
                 Skip to content
               </a>
 
-              {/* Navigation - outside main, never unmounts */}
-              <NavigationWrapper />
-
-              {/* Main content wrapper */}
-              <div className="relative min-h-screen flex flex-col">
-                {/*
-                  Padding accounts for fixed navigation:
-                  - Mobile: pb-20 for bottom tab bar
-                  - Desktop: pt-24 for floating nav (16px top + ~56px nav height + buffer)
-                */}
-                <main id="main-content" className="flex-1 pb-20 md:pb-0 md:pt-24">
-                  {children}
-                </main>
-
-                {/* Footer */}
-                <Footer />
-              </div>
+              {/* Workspace Shell — 4-zone grid layout */}
+              <WorkspaceShell>
+                {children}
+              </WorkspaceShell>
 
               {/* Konami code easter egg */}
               <SkiJumper />
