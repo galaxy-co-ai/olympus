@@ -9,45 +9,9 @@
  * Horizontal row of filter controls.
  */
 
-import { Medal, Heart, X, ChevronDown } from 'lucide-react';
+import { Medal, Heart, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-/**
- * Styled select wrapper with custom dropdown arrow
- */
-function StyledSelect({
-  value,
-  onChange,
-  children,
-  className,
-  style,
-  'aria-label': ariaLabel,
-  ...props
-}: React.SelectHTMLAttributes<HTMLSelectElement> & { 'aria-label': string }) {
-  return (
-    <div className="relative inline-block">
-      <select
-        value={value}
-        onChange={onChange}
-        className={cn(
-          'appearance-none cursor-pointer pr-8',
-          className
-        )}
-        style={style}
-        aria-label={ariaLabel}
-        {...props}
-      >
-        {children}
-      </select>
-      <ChevronDown
-        size={14}
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"
-        style={{ color: 'var(--color-text-muted)' }}
-        aria-hidden="true"
-      />
-    </div>
-  );
-}
+import { Select } from '@/components/ui';
 
 interface FilterBarProps {
   sportFilter: string | null;
@@ -89,77 +53,38 @@ export function FilterBar({
     onFavoritesOnlyChange(false);
   };
 
+  // Build options for selects
+  const sportOptions = [
+    { value: '', label: 'All Sports' },
+    ...sports.map((sport) => ({ value: sport.id, label: sport.name })),
+  ];
+
+  const venueOptions = [
+    { value: '', label: 'All Venues' },
+    ...venues.map((venue) => ({ value: venue, label: venue })),
+  ];
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* Sport filter */}
-      <StyledSelect
-        value={sportFilter || ''}
-        onChange={(e) =>
-          onSportFilterChange(e.target.value || null)
-        }
-        className={cn(
-          'rounded-full border px-3 py-1.5',
-          'transition-colors duration-150',
-          'focus-visible:outline-none focus-visible:ring-2',
-          sportFilter
-            ? 'border-[var(--country-accent-primary)] bg-[var(--country-accent-surface)]'
-            : 'border-transparent'
-        )}
-        style={{
-          fontSize: 'var(--text-small)',
-          color: sportFilter
-            ? 'var(--country-accent-primary)'
-            : 'var(--color-text-secondary)',
-          backgroundColor: sportFilter
-            ? undefined
-            : 'var(--color-bg-secondary)',
-          // @ts-expect-error CSS custom property
-          '--tw-ring-color': 'var(--country-accent-primary)',
-        }}
+      <Select
+        value={sportFilter}
+        onChange={onSportFilterChange}
+        options={sportOptions}
+        placeholder="All Sports"
         aria-label="Filter by sport"
-      >
-        <option value="">All Sports</option>
-        {sports.map((sport) => (
-          <option key={sport.id} value={sport.id}>
-            {sport.name}
-          </option>
-        ))}
-      </StyledSelect>
+      />
 
       {/* Venue filter */}
-      <StyledSelect
-        value={venueFilter || ''}
-        onChange={(e) =>
-          onVenueFilterChange(e.target.value || null)
-        }
-        className={cn(
-          'hidden rounded-full border px-3 py-1.5 sm:block',
-          'transition-colors duration-150',
-          'focus-visible:outline-none focus-visible:ring-2',
-          venueFilter
-            ? 'border-[var(--country-accent-primary)] bg-[var(--country-accent-surface)]'
-            : 'border-transparent'
-        )}
-        style={{
-          fontSize: 'var(--text-small)',
-          color: venueFilter
-            ? 'var(--country-accent-primary)'
-            : 'var(--color-text-secondary)',
-          backgroundColor: venueFilter
-            ? undefined
-            : 'var(--color-bg-secondary)',
-          // @ts-expect-error CSS custom property
-          '--tw-ring-color': 'var(--country-accent-primary)',
-        }}
-        aria-label="Filter by venue"
-      >
-        <option value="">All Venues</option>
-        {venues.map((venue) => (
-          <option key={venue} value={venue}>
-            {venue}
-          </option>
-        ))}
-      </StyledSelect>
+      <div className="hidden sm:block">
+        <Select
+          value={venueFilter}
+          onChange={onVenueFilterChange}
+          options={venueOptions}
+          placeholder="All Venues"
+          aria-label="Filter by venue"
+        />
+      </div>
 
       {/* Medal events toggle */}
       <button

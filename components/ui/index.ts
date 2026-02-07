@@ -17,3 +17,5 @@ export type { ToastData, ToastType } from './toast';
 export { ToastProvider, useToast } from './toast-provider';
 
 export { PageTransition } from './page-transition';
+
+export { Select } from './select';
