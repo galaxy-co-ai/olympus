@@ -75,8 +75,8 @@ export function DesktopNav() {
         // Hide/reveal
         transform: isHidden ? 'translateY(calc(-100% - 32px))' : 'translateY(0)',
 
-        // Padding
-        padding: isResting ? '14px 24px' : '12px 20px',
+        // Padding: compact height
+        padding: isResting ? '8px 20px' : '6px 16px',
 
         // Glass material - ALWAYS visible
         backgroundColor: glassBg,
