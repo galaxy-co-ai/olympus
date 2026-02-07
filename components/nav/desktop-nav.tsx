@@ -61,19 +61,16 @@ export function DesktopNav() {
         transition-all duration-300 ease-out
       "
       style={{
-        // Position: 16px from top, centered with side margins
+        // Position: centered, content-width, max 960px
         top: '16px',
-        left: '16px',
-        right: '16px',
-        maxWidth: '960px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        left: '50%',
+        transform: `translateX(-50%) ${isHidden ? 'translateY(calc(-100% - 32px))' : 'translateY(0)'}`,
+        width: 'fit-content',
+        maxWidth: 'min(960px, calc(100vw - 32px))',
 
         // Pill shape
         borderRadius: '9999px',
 
-        // Hide/reveal
-        transform: isHidden ? 'translateY(calc(-100% - 32px))' : 'translateY(0)',
 
         // Padding: compact height
         padding: isResting ? '8px 20px' : '6px 16px',
