@@ -509,6 +509,9 @@ html {
 
   /* Tab navigation for data (Section I line 58) */
   font-variant-numeric: tabular-nums;
+
+  /* Prevent layout shift when scrollbar appears/disappears */
+  scrollbar-gutter: stable;
 }
 
 body {
