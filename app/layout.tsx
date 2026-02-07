@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider, CountryProvider } from '@/components/theme';
+import { DesktopNav, MobileNav } from '@/components/nav';
 import './globals.css';
 
 /**
@@ -101,9 +102,16 @@ export default function RootLayout({
               Skip to content
             </a>
 
+            {/* Navigation - outside main, never unmounts */}
+            <DesktopNav />
+            <MobileNav />
+
             {/* Main content wrapper */}
             <div className="relative min-h-screen">
-              <main id="main-content">{children}</main>
+              {/* Bottom padding for mobile nav spacing */}
+              <main id="main-content" className="pb-20 md:pb-0">
+                {children}
+              </main>
             </div>
           </CountryProvider>
         </ThemeProvider>
