@@ -44,13 +44,44 @@ function getIconComponent(
 }
 
 /**
+ * Medal dot component for consistent cross-platform rendering
+ */
+function MedalDot({ type }: { type: 'gold' | 'silver' | 'bronze' }) {
+  const colors = {
+    gold: 'var(--color-gold)',
+    silver: 'var(--color-silver)',
+    bronze: 'var(--color-bronze)',
+  };
+  return (
+    <span
+      className="inline-block h-2 w-2 rounded-full shadow-[0_0_0_1px_rgba(0,0,0,0.1)]"
+      style={{ backgroundColor: colors[type] }}
+      aria-label={`${type} medal`}
+    />
+  );
+}
+
+/**
+ * Format result string, replacing emoji medals with consistent MedalDot components
+ */
+function formatResultWithMedals(result: string): React.ReactNode {
+  const parts = result.split(/(🥇|🥈|🥉)/);
+  return parts.map((part, i) => {
+    if (part === '🥇') return <MedalDot key={i} type="gold" />;
+    if (part === '🥈') return <MedalDot key={i} type="silver" />;
+    if (part === '🥉') return <MedalDot key={i} type="bronze" />;
+    return part;
+  });
+}
+
+/**
  * Status badge component
  */
 function StatusBadge({ event }: { event: ScheduleEvent }) {
   if (event.status === 'live') {
     return (
       <div className="flex items-center gap-1.5">
-        <span className="relative flex h-2 w-2">
+        <span className="relative flex h-2.5 w-2.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
           <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
         </span>
@@ -72,12 +103,13 @@ function StatusBadge({ event }: { event: ScheduleEvent }) {
       <div className="flex items-center gap-1">
         <Check size={12} style={{ color: 'var(--color-text-muted)' }} />
         <span
+          className="flex items-center gap-1"
           style={{
             fontSize: 'var(--text-small)',
             color: 'var(--color-text-muted)',
           }}
         >
-          {event.result || 'Completed'}
+          {formatResultWithMedals(event.result || 'Completed')}
         </span>
       </div>
     );
@@ -125,15 +157,23 @@ export function EventCard({
         'group relative flex items-center gap-3 rounded-xl p-3 sm:gap-4 sm:p-4',
         'transition-all duration-150',
         '@media(hover:hover):hover:bg-[var(--color-surface-hover)]',
-        'active:scale-[0.99]',
+        '@media(hover:hover):hover:-translate-y-px',
+        '@media(hover:hover):hover:shadow-[0_2px_8px_rgba(0,0,0,0.04)]',
+        'active:scale-[0.995]',
         'focus-visible:outline-none focus-visible:ring-2',
+        // Non-live cards get secondary bg
+        !isLive && 'bg-[var(--color-bg-secondary)]',
         // Live card special styling
-        isLive && 'border-l-2 border-red-500 bg-red-500/[0.03]',
+        isLive && 'border-l-[3px] border-red-500',
         // Completed cards slightly muted
         isCompleted && 'opacity-75'
       )}
       style={{
-        backgroundColor: isLive ? undefined : 'var(--color-bg-secondary)',
+        // Live card radial gradient
+        ...(isLive && {
+          background: 'radial-gradient(ellipse at left, rgba(239, 68, 68, 0.06) 0%, transparent 40%)',
+          boxShadow: 'inset 0 0 0 1px rgba(239, 68, 68, 0.08)',
+        }),
         // @ts-expect-error CSS custom property
         '--tw-ring-color': 'var(--country-accent-primary)',
       }}
@@ -142,7 +182,7 @@ export function EventCard({
       {/* Sport icon */}
       {Icon && (
         <span
-          className="shrink-0"
+          className="shrink-0 transition-colors duration-150 group-hover:text-[var(--country-accent-primary)]"
           style={{ color: 'var(--country-accent-primary)' }}
         >
           <Icon size={24} />
@@ -191,15 +231,16 @@ export function EventCard({
       {/* Time */}
       <div className="shrink-0 text-right">
         <span
-          className="tabular-nums font-medium"
+          className="tabular-nums font-normal"
           style={{
             fontSize: 'var(--text-body)',
-            color: 'var(--color-text-primary)',
+            color: 'var(--color-text-secondary)',
           }}
         >
           {localTime}
         </span>
         <p
+          className="uppercase tracking-wide"
           style={{
             fontSize: '10px',
             color: 'var(--color-text-muted)',
@@ -211,7 +252,7 @@ export function EventCard({
 
       {/* Venue chip - hidden on mobile */}
       <span
-        className="hidden shrink-0 truncate rounded-full px-2.5 py-1 sm:block"
+        className="hidden shrink-0 truncate rounded-full border border-[var(--color-border)] px-2.5 py-1 transition-colors duration-150 group-hover:border-[var(--color-border-strong)] sm:block"
         style={{
           maxWidth: 120,
           fontSize: 'var(--text-small)',
@@ -245,7 +286,7 @@ export function EventCard({
             'transition-all duration-150',
             isFavorite
               ? 'fill-red-500 text-red-500'
-              : 'fill-transparent opacity-40'
+              : 'fill-transparent opacity-40 hover:opacity-60'
           )}
           style={{
             color: isFavorite ? undefined : 'var(--color-text-muted)',

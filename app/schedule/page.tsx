@@ -13,7 +13,8 @@
  * Day 2 of the Games — schedule is packed.
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 import {
   DaySelector,
   EventList,
@@ -64,6 +65,23 @@ export default function SchedulePage() {
   const [medalEventsOnly, setMedalEventsOnly] = useState(false);
   const [favoritesOnly, setFavoritesOnly] = useState(false);
 
+  // Sticky bar state
+  const [isStuck, setIsStuck] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Detect when sticky bar becomes stuck
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { threshold: 0, rootMargin: '-64px 0px 0px 0px' } // 64px = nav height
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
   // Favorites
   const { favorites, toggleFavorite, count: favoriteCount } = useFavorites();
 
@@ -96,7 +114,7 @@ export default function SchedulePage() {
       {/* Page header */}
       <div className="mb-6 flex items-baseline justify-between">
         <h1
-          className="font-semibold"
+          className="font-bold"
           style={{
             fontSize: 'var(--text-h1)',
             lineHeight: 'var(--leading-snug)',
@@ -108,10 +126,16 @@ export default function SchedulePage() {
         <TimezoneIndicator />
       </div>
 
+      {/* Sentinel for sticky detection */}
+      <div ref={sentinelRef} className="h-0" />
+
       {/* Sticky control bar */}
       <div
-        className="sticky top-16 z-30 -mx-4 px-4 pb-4 pt-2 sm:-mx-6 sm:px-6"
-        style={{ backgroundColor: 'var(--color-bg-primary)' }}
+        className={cn(
+          'sticky top-16 z-30 -mx-4 px-4 pb-4 pt-2 sm:-mx-6 sm:px-6 transition-all duration-150',
+          isStuck && 'glass border-b border-[var(--color-border)]'
+        )}
+        style={{ backgroundColor: isStuck ? undefined : 'var(--color-bg-primary)' }}
       >
         {/* Day selector */}
         <DaySelector

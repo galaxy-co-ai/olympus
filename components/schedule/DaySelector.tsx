@@ -73,7 +73,7 @@ export function DaySelector({
     <div
       ref={containerRef}
       className={cn(
-        'flex gap-1 overflow-x-auto pb-2',
+        'flex snap-x snap-mandatory gap-1 overflow-x-auto pb-2',
         // Hide scrollbar
         'scrollbar-hide',
         // Fade edges
@@ -96,9 +96,10 @@ export function DaySelector({
             onClick={() => onDateSelect(day.date)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
-              'relative flex shrink-0 flex-col items-center rounded-xl px-3 py-2',
+              'relative flex shrink-0 snap-center flex-col items-center rounded-xl px-3 py-2',
               'transition-colors duration-150',
               'focus-visible:outline-none focus-visible:ring-2',
+              '@media(hover:hover):hover:bg-[var(--color-surface-hover)]',
               !hasEvents && 'opacity-50'
             )}
             style={{
@@ -118,6 +119,7 @@ export function DaySelector({
                 className="absolute inset-0 rounded-xl"
                 style={{
                   backgroundColor: 'var(--country-accent-primary)',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
                 }}
                 transition={{
                   type: 'spring',
@@ -127,19 +129,9 @@ export function DaySelector({
               />
             )}
 
-            {/* Today label */}
+            {/* Today indicator dot */}
             {isToday && !isSelected && (
-              <span
-                className="absolute -top-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full px-1.5 py-0.5"
-                style={{
-                  fontSize: '9px',
-                  fontWeight: 500,
-                  color: 'var(--country-accent-primary)',
-                  backgroundColor: 'var(--country-accent-surface)',
-                }}
-              >
-                Today
-              </span>
+              <span className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-[var(--country-accent-primary)]" />
             )}
 
             {/* Day of week */}

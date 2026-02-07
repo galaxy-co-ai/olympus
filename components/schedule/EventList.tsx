@@ -13,7 +13,7 @@
 
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Circle } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { EventCard } from './EventCard';
 import { getTimeBlock } from '@/lib/utils/timezone';
 import type { ScheduleEvent } from '@/lib/types/olympics';
@@ -154,18 +154,27 @@ export function EventList({
         className="flex flex-col items-center justify-center rounded-xl py-16"
         style={{ backgroundColor: 'var(--color-bg-secondary)' }}
       >
-        <Circle
+        <Calendar
           size={48}
+          className="mb-4"
           style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}
         />
         <p
-          className="mt-4 text-center"
           style={{
             fontSize: 'var(--text-body)',
+            color: 'var(--color-text-secondary)',
+          }}
+        >
+          No events found
+        </p>
+        <p
+          className="mt-1"
+          style={{
+            fontSize: 'var(--text-small)',
             color: 'var(--color-text-muted)',
           }}
         >
-          No events match your filters
+          Try adjusting your filters
         </p>
       </div>
     );
@@ -179,7 +188,7 @@ export function EventList({
         initial="hidden"
         animate="visible"
         exit="exit"
-        className="space-y-6"
+        className="space-y-8"
       >
         {/* Live Now pinned section (time view only) */}
         {viewMode === 'time' && liveEvents.length > 0 && (
@@ -220,10 +229,11 @@ export function EventList({
         {groupedEvents.map((group) => (
           <motion.section key={group.key} variants={itemVariants}>
             <h3
-              className="mb-3 font-semibold uppercase tracking-wider"
+              className="mb-2 font-semibold uppercase tracking-wider"
               style={{
                 fontSize: 'var(--text-small)',
                 color: 'var(--color-text-muted)',
+                letterSpacing: '0.08em',
               }}
             >
               {group.label}
@@ -233,6 +243,7 @@ export function EventList({
                 </span>
               )}
             </h3>
+            <div className="mb-3 h-px bg-[var(--color-border)]" />
             <div className="space-y-2">
               {group.events.map((event) => (
                 <motion.div key={event.id} variants={itemVariants} layout>
