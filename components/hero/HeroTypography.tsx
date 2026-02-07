@@ -164,23 +164,6 @@ export function HeroTypography() {
         XXVI Olympic Winter Games
       </motion.p>
 
-      {/* Line 4: February 6–22 · Italy */}
-      <motion.p
-        className="mt-2 uppercase tracking-[0.15em]"
-        style={{
-          fontSize: 'var(--text-small)',
-          color: 'var(--color-text-muted)',
-        }}
-        initial={reducedMotion ? { opacity: 1 } : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={
-          reducedMotion
-            ? { duration: 0 }
-            : { delay: 0.7, duration: 0.3, ease: 'easeOut' }
-        }
-      >
-        February 6–22 · Italy
-      </motion.p>
     </div>
   );
 }

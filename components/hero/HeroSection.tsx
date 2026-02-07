@@ -25,15 +25,36 @@ interface HeroSectionProps {
   onTabChange?: (tab: HeroTab) => void;
 }
 
+/**
+ * Format time in Italy timezone (Europe/Rome)
+ */
+function getItalyTime(): string {
+  return new Date().toLocaleTimeString('en-US', {
+    timeZone: 'Europe/Rome',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  });
+}
+
 export function HeroSection({ activeTab = 'live', onTabChange }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const rafId = useRef<number | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [italyTime, setItalyTime] = useState<string>('');
 
   useEffect(() => {
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReducedMotion(motionQuery.matches);
+
+    // Initialize and update Italy time
+    setItalyTime(getItalyTime());
+    const interval = setInterval(() => {
+      setItalyTime(getItalyTime());
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Master scroll handler — drives all dissolve effects
@@ -111,7 +132,32 @@ export function HeroSection({ activeTab = 'live', onTabChange }: HeroSectionProp
         <HeroTypography />
       </div>
 
-      {/* Layer 4: Toolbar (docked at bottom edge) */}
+      {/* Layer 4: Corner info */}
+      {/* Bottom left: Date range */}
+      <div
+        className="absolute bottom-6 left-6 z-10 uppercase tracking-[0.15em]"
+        style={{
+          fontSize: 'var(--text-small)',
+          color: 'var(--color-text-muted)',
+        }}
+      >
+        February 6–22
+      </div>
+
+      {/* Bottom right: Italy + live time */}
+      <div
+        className="absolute bottom-6 right-6 z-10 flex items-center gap-2 uppercase tracking-[0.1em] tabular-nums"
+        style={{
+          fontSize: 'var(--text-small)',
+          color: 'var(--color-text-muted)',
+        }}
+      >
+        <span>Italy</span>
+        <span style={{ opacity: 0.4 }}>|</span>
+        <span>{italyTime}</span>
+      </div>
+
+      {/* Layer 5: Toolbar (docked at bottom edge) */}
       <div className="absolute bottom-0 left-1/2 z-10 -translate-x-1/2">
         <HeroToolbar activeTab={activeTab} onTabChange={handleTabChange} />
       </div>
