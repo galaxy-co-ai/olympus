@@ -1,0 +1,847 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   OLYMPUS DESIGN SYSTEM — CSS Custom Properties
+
+   Reference: OLYMPUS_CONSTITUTION.md
+   - Section 3: Country Vibe System (lines 274-598)
+   - Section I: Rauno's Web Interface Guidelines (lines 39-90)
+   - Section 11: Typography System (lines 1008-1045)
+
+   Architecture:
+   - Tier 1: Olympus base palette (the shell, never changes)
+   - Tier 2: Semantic tokens (mapped to base, switch on theme)
+   - Tier 3: Country accent tokens (CSS-only theming, no React re-renders)
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   BASE LAYER — Olympus Palette
+   Inspired by Milan Cortina's alpine Italian character
+   ----------------------------------------------------------------------------- */
+
+:root {
+  /* ===== Core Neutrals (the architecture) ===== */
+
+  /* Warm alpine white — Dolomite limestone in soft light */
+  --olympus-white: #F7F6F3;
+
+  /* Slightly deeper warm white — packed snow in afternoon shadow */
+  --olympus-snow: #EDECEA;
+
+  /* Warm gray with sandy undertone — weathered alpine wood */
+  --olympus-stone: #C4BFB6;
+
+  /* Medium warm gray — Cortina's stone in overcast light */
+  --olympus-slate: #6B6560;
+
+  /* Near-black with warm brown undertone — rich, readable */
+  --olympus-charcoal: #2C2825;
+
+  /* ===== Signature Colors (the personality) ===== */
+
+  /* Muted steel-blue of glacial ice in Dolomite shadow */
+  --olympus-glacier: #7BA7C2;
+
+  /* Warm golden tone of Dolomite limestone at Enrosadira sunrise */
+  --olympus-dolomite: #D4A574;
+
+  /* Deep spruce green of alpine forests below treeline */
+  --olympus-alpine: #4A6741;
+
+  /* Soft pink of Dolomite peaks at golden hour */
+  --olympus-peak: #E8C4B8;
+
+  /* ===== Dark Mode Base Colors ===== */
+
+  /* Deep warm black — winter night sky in mountains */
+  --olympus-night: #1A1816;
+
+  /* Slightly lighter — pine bark in moonlight */
+  --olympus-shadow: #242120;
+
+  /* Medium dark surface — last light before true dark */
+  --olympus-dusk: #3A3533;
+
+  /* ===== Universal Constants (never themed) ===== */
+
+  --color-live: #EF4444;
+  --color-gold: #D4A017;
+  --color-silver: #A8A8A8;
+  --color-bronze: #CD7F32;
+  --color-success: #22C55E;
+  --color-warning: #EAB308;
+
+  /* ===== Semantic Tokens — Light Mode Defaults ===== */
+
+  --color-bg-primary: var(--olympus-white);
+  --color-bg-secondary: var(--olympus-snow);
+  --color-bg-elevated: #FFFFFF;
+  --color-bg-overlay: rgba(0, 0, 0, 0.6);
+
+  --color-text-primary: var(--olympus-charcoal);
+  --color-text-secondary: var(--olympus-slate);
+  --color-text-muted: var(--olympus-stone);
+
+  --color-accent-primary: var(--olympus-glacier);
+  --color-accent-warm: var(--olympus-dolomite);
+  --color-accent-nature: var(--olympus-alpine);
+
+  --color-border: rgba(0, 0, 0, 0.06);
+  --color-border-strong: rgba(0, 0, 0, 0.12);
+
+  --color-surface-hover: rgba(232, 196, 184, 0.08);
+  --color-surface-active: rgba(232, 196, 184, 0.12);
+
+  /* Glass material for navigation */
+  --color-glass-bg: rgba(255, 255, 255, 0.8);
+  --color-glass-border: rgba(0, 0, 0, 0.06);
+  --color-glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+
+  /* Focus ring color */
+  --color-focus-ring: var(--olympus-glacier);
+
+  /* ===== Country Accent Tokens — Default to Olympus ===== */
+  /* These get overridden by [data-country="xxx"] selectors */
+
+  --country-accent-primary: var(--olympus-glacier);
+  --country-accent-secondary: var(--olympus-dolomite);
+  --country-accent-muted: #B8D4E3;
+  --country-accent-surface: rgba(123, 167, 194, 0.08);
+  --country-accent-glow: rgba(123, 167, 194, 0.20);
+
+  /* ===== Typography Tokens ===== */
+
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Commit Mono', ui-monospace, monospace;
+
+  /* Fluid type scale per Section 11 */
+  --text-hero: clamp(48px, 8vw, 96px);
+  --text-h1: clamp(32px, 5vw, 56px);
+  --text-h2: clamp(24px, 3.5vw, 40px);
+  --text-h3: clamp(20px, 2.5vw, 28px);
+  --text-body: clamp(15px, 1.2vw, 18px);
+  --text-small: clamp(12px, 1vw, 14px);
+  --text-data: clamp(14px, 1.1vw, 16px);
+
+  /* Line heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+  --leading-data: 1.3;
+
+  /* ===== Spacing Tokens (4px grid system) ===== */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ===== Animation Tokens ===== */
+
+  --duration-instant: 80ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* ===== Border Radius ===== */
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 100vw;
+
+  /* ===== Z-Index Scale ===== */
+
+  --z-base: 0;
+  --z-elevated: 10;
+  --z-sticky: 100;
+  --z-nav: 200;
+  --z-modal: 300;
+  --z-tooltip: 400;
+  --z-max: 9999;
+}
+
+/* -----------------------------------------------------------------------------
+   DARK MODE — Override semantic tokens
+   Reference: Section 3 lines 369-386
+   ----------------------------------------------------------------------------- */
+
+:root[data-theme="dark"] {
+  --color-bg-primary: var(--olympus-night);
+  --color-bg-secondary: var(--olympus-shadow);
+  --color-bg-elevated: var(--olympus-dusk);
+  --color-bg-overlay: rgba(0, 0, 0, 0.8);
+
+  --color-text-primary: var(--olympus-white);
+  --color-text-secondary: var(--olympus-stone);
+  --color-text-muted: var(--olympus-slate);
+
+  /* Brightened for dark mode contrast compliance */
+  --color-accent-primary: #8FBDD4;
+  --color-accent-warm: #DEB485;
+  --color-accent-nature: #6B8F5E;
+
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
+
+  --color-surface-hover: rgba(123, 167, 194, 0.06);
+  --color-surface-active: rgba(123, 167, 194, 0.10);
+
+  /* Glass material — dark mode */
+  --color-glass-bg: rgba(26, 24, 22, 0.85);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.15);
+
+  --color-focus-ring: #8FBDD4;
+
+  /* Country accents — brightened defaults for dark mode */
+  --country-accent-primary: #8FBDD4;
+  --country-accent-muted: #5A8DA8;
+  --country-accent-surface: rgba(143, 189, 212, 0.08);
+  --country-accent-glow: rgba(143, 189, 212, 0.25);
+}
+
+/* -----------------------------------------------------------------------------
+   COUNTRY ACCENT OVERRIDES
+   Reference: Section 3 lines 395-438
+   Applied via data-country attribute on :root
+   Note: These are the algorithmic flag-derived palettes (V1)
+   ----------------------------------------------------------------------------- */
+
+/* USA */
+:root[data-country="usa"] {
+  --country-accent-primary: #B22234;
+  --country-accent-secondary: #3C3B6E;
+  --country-accent-muted: #D4919A;
+  --country-accent-surface: rgba(178, 34, 52, 0.08);
+  --country-accent-glow: rgba(178, 34, 52, 0.20);
+}
+:root[data-theme="dark"][data-country="usa"] {
+  --country-accent-primary: #E84455;
+  --country-accent-muted: #8B5A5F;
+  --country-accent-surface: rgba(232, 68, 85, 0.08);
+  --country-accent-glow: rgba(232, 68, 85, 0.25);
+}
+
+/* Norway */
+:root[data-country="nor"] {
+  --country-accent-primary: #BA0C2F;
+  --country-accent-secondary: #00205B;
+  --country-accent-muted: #D9869B;
+  --country-accent-surface: rgba(186, 12, 47, 0.08);
+  --country-accent-glow: rgba(186, 12, 47, 0.20);
+}
+:root[data-theme="dark"][data-country="nor"] {
+  --country-accent-primary: #E8304F;
+  --country-accent-muted: #8B4F5A;
+  --country-accent-surface: rgba(232, 48, 79, 0.08);
+  --country-accent-glow: rgba(232, 48, 79, 0.25);
+}
+
+/* Japan */
+:root[data-country="jpn"] {
+  --country-accent-primary: #BC002D;
+  --country-accent-secondary: #BC002D;
+  --country-accent-muted: #D98096;
+  --country-accent-surface: rgba(188, 0, 45, 0.08);
+  --country-accent-glow: rgba(188, 0, 45, 0.20);
+}
+:root[data-theme="dark"][data-country="jpn"] {
+  --country-accent-primary: #E82048;
+  --country-accent-muted: #8B4055;
+  --country-accent-surface: rgba(232, 32, 72, 0.08);
+  --country-accent-glow: rgba(232, 32, 72, 0.25);
+}
+
+/* Switzerland */
+:root[data-country="sui"] {
+  --country-accent-primary: #DA291C;
+  --country-accent-secondary: #DA291C;
+  --country-accent-muted: #E99991;
+  --country-accent-surface: rgba(218, 41, 28, 0.08);
+  --country-accent-glow: rgba(218, 41, 28, 0.20);
+}
+:root[data-theme="dark"][data-country="sui"] {
+  --country-accent-primary: #F04438;
+  --country-accent-muted: #A05550;
+  --country-accent-surface: rgba(240, 68, 56, 0.08);
+  --country-accent-glow: rgba(240, 68, 56, 0.25);
+}
+
+/* Germany */
+:root[data-country="ger"] {
+  --country-accent-primary: #DD0000;
+  --country-accent-secondary: #FFCC00;
+  --country-accent-muted: #E88080;
+  --country-accent-surface: rgba(221, 0, 0, 0.08);
+  --country-accent-glow: rgba(221, 0, 0, 0.20);
+}
+:root[data-theme="dark"][data-country="ger"] {
+  --country-accent-primary: #FF3333;
+  --country-accent-secondary: #FFD633;
+  --country-accent-muted: #994D4D;
+  --country-accent-surface: rgba(255, 51, 51, 0.08);
+  --country-accent-glow: rgba(255, 51, 51, 0.25);
+}
+
+/* France */
+:root[data-country="fra"] {
+  --country-accent-primary: #002395;
+  --country-accent-secondary: #ED2939;
+  --country-accent-muted: #8091CA;
+  --country-accent-surface: rgba(0, 35, 149, 0.08);
+  --country-accent-glow: rgba(0, 35, 149, 0.20);
+}
+:root[data-theme="dark"][data-country="fra"] {
+  --country-accent-primary: #4060D0;
+  --country-accent-muted: #5060A0;
+  --country-accent-surface: rgba(64, 96, 208, 0.08);
+  --country-accent-glow: rgba(64, 96, 208, 0.25);
+}
+
+/* Canada */
+:root[data-country="can"] {
+  --country-accent-primary: #FF0000;
+  --country-accent-secondary: #FF0000;
+  --country-accent-muted: #FF8080;
+  --country-accent-surface: rgba(255, 0, 0, 0.08);
+  --country-accent-glow: rgba(255, 0, 0, 0.20);
+}
+:root[data-theme="dark"][data-country="can"] {
+  --country-accent-primary: #FF4040;
+  --country-accent-muted: #A05050;
+  --country-accent-surface: rgba(255, 64, 64, 0.08);
+  --country-accent-glow: rgba(255, 64, 64, 0.25);
+}
+
+/* Sweden */
+:root[data-country="swe"] {
+  --country-accent-primary: #004B87;
+  --country-accent-secondary: #FECC02;
+  --country-accent-muted: #80A5C3;
+  --country-accent-surface: rgba(0, 75, 135, 0.08);
+  --country-accent-glow: rgba(0, 75, 135, 0.20);
+}
+:root[data-theme="dark"][data-country="swe"] {
+  --country-accent-primary: #3080C0;
+  --country-accent-secondary: #FFD830;
+  --country-accent-muted: #406080;
+  --country-accent-surface: rgba(48, 128, 192, 0.08);
+  --country-accent-glow: rgba(48, 128, 192, 0.25);
+}
+
+/* South Korea */
+:root[data-country="kor"] {
+  --country-accent-primary: #CD2E3A;
+  --country-accent-secondary: #0047A0;
+  --country-accent-muted: #E6979D;
+  --country-accent-surface: rgba(205, 46, 58, 0.08);
+  --country-accent-glow: rgba(205, 46, 58, 0.20);
+}
+:root[data-theme="dark"][data-country="kor"] {
+  --country-accent-primary: #E85060;
+  --country-accent-muted: #905055;
+  --country-accent-surface: rgba(232, 80, 96, 0.08);
+  --country-accent-glow: rgba(232, 80, 96, 0.25);
+}
+
+/* Italy (host) */
+:root[data-country="ita"] {
+  --country-accent-primary: #009246;
+  --country-accent-secondary: #CE2B37;
+  --country-accent-muted: #80C9A3;
+  --country-accent-surface: rgba(0, 146, 70, 0.08);
+  --country-accent-glow: rgba(0, 146, 70, 0.20);
+}
+:root[data-theme="dark"][data-country="ita"] {
+  --country-accent-primary: #30B070;
+  --country-accent-muted: #408060;
+  --country-accent-surface: rgba(48, 176, 112, 0.08);
+  --country-accent-glow: rgba(48, 176, 112, 0.25);
+}
+
+/* Austria */
+:root[data-country="aut"] {
+  --country-accent-primary: #ED2939;
+  --country-accent-secondary: #ED2939;
+  --country-accent-muted: #F6949C;
+  --country-accent-surface: rgba(237, 41, 57, 0.08);
+  --country-accent-glow: rgba(237, 41, 57, 0.20);
+}
+:root[data-theme="dark"][data-country="aut"] {
+  --country-accent-primary: #F85060;
+  --country-accent-muted: #984550;
+  --country-accent-surface: rgba(248, 80, 96, 0.08);
+  --country-accent-glow: rgba(248, 80, 96, 0.25);
+}
+
+/* Finland */
+:root[data-country="fin"] {
+  --country-accent-primary: #003580;
+  --country-accent-secondary: #003580;
+  --country-accent-muted: #809AC0;
+  --country-accent-surface: rgba(0, 53, 128, 0.08);
+  --country-accent-glow: rgba(0, 53, 128, 0.20);
+}
+:root[data-theme="dark"][data-country="fin"] {
+  --country-accent-primary: #4080D0;
+  --country-accent-muted: #405080;
+  --country-accent-surface: rgba(64, 128, 208, 0.08);
+  --country-accent-glow: rgba(64, 128, 208, 0.25);
+}
+
+/* Netherlands */
+:root[data-country="ned"] {
+  --country-accent-primary: #AE1C28;
+  --country-accent-secondary: #21468B;
+  --country-accent-muted: #D78E94;
+  --country-accent-surface: rgba(174, 28, 40, 0.08);
+  --country-accent-glow: rgba(174, 28, 40, 0.20);
+}
+:root[data-theme="dark"][data-country="ned"] {
+  --country-accent-primary: #D84050;
+  --country-accent-muted: #885055;
+  --country-accent-surface: rgba(216, 64, 80, 0.08);
+  --country-accent-glow: rgba(216, 64, 80, 0.25);
+}
+
+/* China */
+:root[data-country="chn"] {
+  --country-accent-primary: #EE1C25;
+  --country-accent-secondary: #FFFF00;
+  --country-accent-muted: #F78E92;
+  --country-accent-surface: rgba(238, 28, 37, 0.08);
+  --country-accent-glow: rgba(238, 28, 37, 0.20);
+}
+:root[data-theme="dark"][data-country="chn"] {
+  --country-accent-primary: #F84048;
+  --country-accent-muted: #A05055;
+  --country-accent-surface: rgba(248, 64, 72, 0.08);
+  --country-accent-glow: rgba(248, 64, 72, 0.25);
+}
+
+/* Australia */
+:root[data-country="aus"] {
+  --country-accent-primary: #00008B;
+  --country-accent-secondary: #FFFFFF;
+  --country-accent-muted: #8080C5;
+  --country-accent-surface: rgba(0, 0, 139, 0.08);
+  --country-accent-glow: rgba(0, 0, 139, 0.20);
+}
+:root[data-theme="dark"][data-country="aus"] {
+  --country-accent-primary: #4040D0;
+  --country-accent-muted: #404080;
+  --country-accent-surface: rgba(64, 64, 208, 0.08);
+  --country-accent-glow: rgba(64, 64, 208, 0.25);
+}
+
+/* -----------------------------------------------------------------------------
+   TAILWIND THEME CONFIGURATION
+   ----------------------------------------------------------------------------- */
+
+@theme inline {
+  /* Map semantic tokens to Tailwind */
+  --color-background: var(--color-bg-primary);
+  --color-foreground: var(--color-text-primary);
+
+  /* Fonts */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  /* Extend with Olympus palette */
+  --color-olympus-white: var(--olympus-white);
+  --color-olympus-snow: var(--olympus-snow);
+  --color-olympus-stone: var(--olympus-stone);
+  --color-olympus-slate: var(--olympus-slate);
+  --color-olympus-charcoal: var(--olympus-charcoal);
+  --color-olympus-glacier: var(--olympus-glacier);
+  --color-olympus-dolomite: var(--olympus-dolomite);
+  --color-olympus-alpine: var(--olympus-alpine);
+  --color-olympus-peak: var(--olympus-peak);
+  --color-olympus-night: var(--olympus-night);
+  --color-olympus-shadow: var(--olympus-shadow);
+  --color-olympus-dusk: var(--olympus-dusk);
+
+  /* Semantic colors for Tailwind */
+  --color-primary: var(--color-accent-primary);
+  --color-secondary: var(--color-text-secondary);
+  --color-muted: var(--color-text-muted);
+  --color-accent: var(--country-accent-primary);
+  --color-border: var(--color-border);
+
+  /* Medal colors */
+  --color-gold: var(--color-gold);
+  --color-silver: var(--color-silver);
+  --color-bronze: var(--color-bronze);
+  --color-live: var(--color-live);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+}
+
+/* -----------------------------------------------------------------------------
+   GLOBAL STYLES — Rauno's Web Interface Guidelines
+   Reference: Section I lines 43-90
+   ----------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Smooth scroll for anchor navigation (Section I line 67) */
+  scroll-behavior: smooth;
+
+  /* Prevent iOS zoom on input focus (Section I line 71) */
+  -webkit-text-size-adjust: 100%;
+
+  /* Tab navigation for data (Section I line 58) */
+  font-variant-numeric: tabular-nums;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--leading-normal);
+
+  /* Rauno: Typography baseline (Section I lines 53-54) */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+
+  /* Rauno: Touch (Section I line 73) */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Rauno: Typography (Section I line 57) — no font weights below 400 */
+body {
+  font-weight: 400;
+}
+
+/* All numbers use tabular figures (Section I line 58) */
+.tabular-nums,
+[data-numeric],
+time,
+[role="timer"],
+.medal-count,
+.stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus rings via box-shadow, not outline (Section I line 85) */
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-focus-ring);
+}
+
+/* Rauno: Interactive elements disable user-select on inner content (Section I line 48) */
+button,
+[role="button"] {
+  user-select: none;
+}
+
+/* Rauno: Decorative elements disable pointer-events (Section I line 49) */
+.decorative,
+[data-decorative="true"] {
+  pointer-events: none;
+}
+
+/* Links are links — native behavior preserved */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Rauno: Images (Section I line 88) */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Rauno: Video (Section I line 74) */
+video {
+  /* Will be set in JSX */
+}
+
+/* Form resets */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Rauno: Input font size >= 16px prevents iOS zoom (Section I line 71) */
+input,
+textarea,
+select {
+  font-size: max(16px, 1em);
+}
+
+/* Remove default button styling */
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Remove list styles */
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Headings reset */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+/* -----------------------------------------------------------------------------
+   THEME TRANSITIONS — Rauno's Rule
+   Reference: Section 3 lines 525-536
+
+   CRITICAL: Theme switching NEVER triggers transitions on elements.
+   Colors just ARE the new colors. No crossfades, no animations.
+   ----------------------------------------------------------------------------- */
+
+/* Prevent all color transitions by default */
+* {
+  transition-property: none;
+}
+
+/* Only allow transitions on explicitly animated elements */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: var(--ease-out);
+  transition-duration: var(--duration-normal);
+}
+
+.transition-transform {
+  transition-property: transform;
+  transition-timing-function: var(--ease-out);
+  transition-duration: var(--duration-fast);
+}
+
+.transition-opacity {
+  transition-property: opacity;
+  transition-timing-function: var(--ease-out);
+  transition-duration: var(--duration-fast);
+}
+
+.transition-shadow {
+  transition-property: box-shadow;
+  transition-timing-function: var(--ease-out);
+  transition-duration: var(--duration-fast);
+}
+
+/* Combined transitions for interactive elements */
+.transition-interactive {
+  transition-property: transform, box-shadow, opacity;
+  transition-timing-function: var(--ease-out);
+  transition-duration: var(--duration-fast);
+}
+
+/* -----------------------------------------------------------------------------
+   HOVER STATES — Only on hover-capable devices
+   Reference: Section I line 70
+   ----------------------------------------------------------------------------- */
+
+@media (hover: hover) {
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 0 1px var(--country-accent-glow);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   REDUCED MOTION — Respect user preferences
+   Reference: Section 4 line 714, Section 7 line 916
+   ----------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   HIGH CONTRAST MODE — Disable country accents, maximize contrast
+   Reference: Section 3 line 596
+   ----------------------------------------------------------------------------- */
+
+@media (prefers-contrast: more) {
+  :root,
+  :root[data-theme="dark"] {
+    --country-accent-primary: var(--olympus-glacier);
+    --country-accent-secondary: var(--olympus-dolomite);
+    --country-accent-surface: transparent;
+    --country-accent-glow: transparent;
+
+    --color-border: currentColor;
+    --color-border-strong: currentColor;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   UTILITY CLASSES
+   ----------------------------------------------------------------------------- */
+
+/* Hide visually but keep accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Glass effect for navigation and overlays */
+.glass {
+  background: var(--color-glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  box-shadow: var(--color-glass-shadow);
+}
+
+/* Skip to content link (Section 2 line 251) */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-max);
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  box-shadow: var(--color-glass-shadow);
+}
+
+.skip-to-content:focus {
+  top: var(--space-4);
+}
+
+/* Live indicator pulse animation */
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse-live {
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+/* Shimmer animation for skeleton loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-bg-secondary) 0%,
+    var(--color-bg-elevated) 50%,
+    var(--color-bg-secondary) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Container max-widths */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    max-width: 1200px;
+  }
+}
