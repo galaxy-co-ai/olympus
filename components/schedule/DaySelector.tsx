@@ -170,10 +170,10 @@ export function DaySelector({
               {day.isFirst ? `${day.month} ${day.dayOfMonth}` : day.dayOfMonth}
             </span>
 
-            {/* Event indicator dot */}
-            {hasEvents && (
+            {/* Event indicator dot — only show when NOT selected */}
+            {hasEvents && !isSelected && (
               <span className="relative z-10 mt-1 flex h-1.5 w-1.5">
-                {hasLiveEvents && !isSelected ? (
+                {hasLiveEvents ? (
                   <>
                     {/* Pulsing live dot */}
                     <span
@@ -189,9 +189,7 @@ export function DaySelector({
                   <span
                     className="h-1.5 w-1.5 rounded-full"
                     style={{
-                      backgroundColor: isSelected
-                        ? 'rgba(255,255,255,0.5)'
-                        : 'var(--color-text-muted)',
+                      backgroundColor: 'var(--color-text-muted)',
                       opacity: 0.5,
                     }}
                   />

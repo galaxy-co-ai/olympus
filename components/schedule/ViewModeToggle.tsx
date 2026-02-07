@@ -74,9 +74,9 @@ export function ViewModeToggle({ mode, onModeChange }: ViewModeToggleProps) {
               />
             )}
 
-            <Icon size={14} className="relative z-10" />
+            <Icon size={16} className="relative z-10" aria-hidden="true" />
             <span className="relative z-10 hidden font-medium sm:inline">
-              {option.label}
+              {option.label.replace('By ', '')}
             </span>
           </button>
         );
