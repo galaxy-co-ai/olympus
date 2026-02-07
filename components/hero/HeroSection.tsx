@@ -101,17 +101,18 @@ export function HeroSection({ activeTab = 'live', onTabChange }: HeroSectionProp
       {/* Layer 2: Snow particles */}
       <SnowParticles />
 
-      {/* Layer 3: Content (foreground) */}
+      {/* Layer 3: Content (foreground) — shifted upward */}
       <div
         ref={contentRef}
-        className="relative z-10 flex flex-col items-center justify-center px-4 pt-24 text-center"
+        className="relative z-10 flex flex-col items-center justify-center px-4 text-center"
+        style={{ marginTop: '-80px' }}
       >
         <OlympicRings />
         <HeroTypography />
       </div>
 
-      {/* Layer 4: Toolbar (docked at bottom) */}
-      <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2">
+      {/* Layer 4: Toolbar (docked at bottom edge) */}
+      <div className="absolute bottom-0 left-1/2 z-10 -translate-x-1/2">
         <HeroToolbar activeTab={activeTab} onTabChange={handleTabChange} />
       </div>
     </section>
