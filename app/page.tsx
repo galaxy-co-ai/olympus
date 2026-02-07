@@ -1,125 +1,82 @@
+'use client';
+
 /**
- * Olympus Home Page
+ * Olympus Home Page — Broadcast Dashboard
  *
  * Reference: OLYMPUS_CONSTITUTION.md
  * - Section 1: Hero / Landing Experience (lines 99-118)
- * - Section 4: Sport Cards (lines 601-830)
  * - Section 5: Medal Tracker (lines 833-874)
+ * - Section 6: Schedule & Timeline (lines 876-897)
  *
- * Day 2 of the Games — content is live.
+ * Day 2 of the Games — transformed into a near-zero-scroll broadcast dashboard.
+ * HeroToolbar tabs switch between Live, Medals, and Schedule panels.
  */
 
-import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
-import { SPORTS, getTopCountries, getTotalMedals } from '@/lib/data';
-import { SportCardGrid } from '@/components/sports';
-import { MedalTable } from '@/components/data';
+import { useState, useEffect, useRef } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { HeroSection } from '@/components/hero';
-import { StorySection } from '@/components/story';
+import {
+  type HeroTab,
+  LivePanel,
+  MedalsPanel,
+  SchedulePanel,
+} from '@/components/home';
+
+/**
+ * Get initial tab from URL hash (only on client)
+ */
+function getInitialTab(): HeroTab {
+  if (typeof window !== 'undefined') {
+    const hash = window.location.hash.slice(1);
+    if (['live', 'medals', 'schedule'].includes(hash)) {
+      return hash as HeroTab;
+    }
+  }
+  return 'live';
+}
 
 export default function Home() {
-  const topCountries = getTopCountries(10);
-  const totals = getTotalMedals();
+  const [activeTab, setActiveTab] = useState<HeroTab>(getInitialTab);
+
+  // Update hash on tab change (skip initial mount)
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    window.history.replaceState(null, '', `#${activeTab}`);
+  }, [activeTab]);
 
   return (
     <div>
       {/* ================================================================
           SECTION 1: CINEMATIC HERO
-          Full-viewport immersive experience
+          Full-viewport immersive experience with tabbed toolbar
           ================================================================ */}
-      <HeroSection />
+      <HeroSection activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* ================================================================
-          CONTENT SECTIONS
-          Revealed as hero dissolves on scroll
+          SECTION 2: CONTENT PANEL
+          Single panel that swaps based on active tab
           Sits above hero in z-index with opaque background
           ================================================================ */}
       <div
         className="relative z-20"
         style={{ backgroundColor: 'var(--color-bg-primary)' }}
       >
-        {/* ================================================================
-            SECTION 2: SPORTS GRID
-            Live & Upcoming events
-            ================================================================ */}
-        <section className="container max-w-7xl px-4 py-16 sm:px-6 md:py-24">
-          <h2
-            className="mb-8 font-semibold"
-            style={{
-              fontSize: 'var(--text-h2)',
-              color: 'var(--color-text-primary)',
-            }}
-          >
-            Live & Upcoming
-          </h2>
-
-          <SportCardGrid sports={SPORTS} />
+        <section
+          id="main-content"
+          className="container max-w-5xl px-4 py-12 sm:px-6 sm:py-16"
+          role="tabpanel"
+          aria-labelledby={`tab-${activeTab}`}
+        >
+          <AnimatePresence mode="wait">
+            {activeTab === 'live' && <LivePanel key="live" />}
+            {activeTab === 'medals' && <MedalsPanel key="medals" />}
+            {activeTab === 'schedule' && <SchedulePanel key="schedule" />}
+          </AnimatePresence>
         </section>
-
-        {/* ================================================================
-            SECTION 3: MEDAL SNAPSHOT
-            Top 10 countries + link to full standings
-            ================================================================ */}
-        <section className="container max-w-7xl px-4 py-16 sm:px-6 md:py-24">
-          <div className="flex items-baseline justify-between">
-            <h2
-              className="font-semibold"
-              style={{
-                fontSize: 'var(--text-h2)',
-                color: 'var(--color-text-primary)',
-              }}
-            >
-              Medal Standings
-            </h2>
-
-            {/* Total medals count */}
-            <p
-              className="hidden tabular-nums sm:block"
-              style={{
-                fontSize: 'var(--text-small)',
-                color: 'var(--color-text-muted)',
-              }}
-            >
-              {totals.total} medals awarded
-            </p>
-          </div>
-
-          {/* Top 10 table */}
-          <div
-            className="mt-8 overflow-hidden rounded-xl border"
-            style={{ borderColor: 'var(--color-border)' }}
-          >
-            <MedalTable standings={topCountries} limit={10} />
-          </div>
-
-          {/* View all link */}
-          <div className="mt-6 text-center">
-            <Link
-              href="/medals"
-              className="group inline-flex items-center gap-1 transition-colors"
-              style={{
-                fontSize: 'var(--text-small)',
-                color: 'var(--country-accent-primary)',
-              }}
-            >
-              View Full Standings
-              <ChevronRight
-                size={16}
-                className="transition-transform duration-150 group-hover:translate-x-0.5"
-              />
-            </Link>
-          </div>
-        </section>
-
-        {/* ================================================================
-            SECTION 4: SCROLL STORYTELLING
-            "The Story of Milan Cortina 2026" — editorial narrative experience
-            Subtle background tint to visually separate from data sections
-            Reference: OLYMPUS_CONSTITUTION.md Section 7
-            ================================================================ */}
-        <div style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
-          <StorySection />
-        </div>
       </div>
     </div>
   );

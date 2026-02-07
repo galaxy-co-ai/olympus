@@ -8,22 +8,26 @@
  * - Layers: gradient → mountains → snow → content
  * - Single scroll handler drives all effects
  * - Scroll-triggered dissolve into content below
+ * - HeroToolbar replaces GamesIndicator for tabbed navigation
  *
  * The hero must make someone feel the Olympics in 3 seconds.
  */
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
 import { MountainBackground } from './MountainBackground';
 import { SnowParticles } from './SnowParticles';
 import { OlympicRings } from './OlympicRings';
 import { HeroTypography } from './HeroTypography';
-import { GamesIndicator } from './GamesIndicator';
+import { HeroToolbar, type HeroTab } from '@/components/home';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  activeTab?: HeroTab;
+  onTabChange?: (tab: HeroTab) => void;
+}
+
+export function HeroSection({ activeTab = 'live', onTabChange }: HeroSectionProps) {
   const heroRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const chevronRef = useRef<HTMLDivElement>(null);
   const rafId = useRef<number | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -55,11 +59,6 @@ export function HeroSection() {
         contentRef.current.style.opacity = String(opacity);
       }
 
-      // Fade out chevron faster
-      if (chevronRef.current) {
-        chevronRef.current.style.opacity = String(Math.max(0, 1 - progress * 3));
-      }
-
       rafId.current = null;
     });
   }, [reducedMotion]);
@@ -76,6 +75,11 @@ export function HeroSection() {
       }
     };
   }, [handleScroll, reducedMotion]);
+
+  // Handle tab changes - pass to parent if provided
+  const handleTabChange = (tab: HeroTab) => {
+    onTabChange?.(tab);
+  };
 
   return (
     <section
@@ -104,36 +108,12 @@ export function HeroSection() {
       >
         <OlympicRings />
         <HeroTypography />
-        <GamesIndicator />
       </div>
 
-      {/* Scroll chevron */}
-      <div
-        ref={chevronRef}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2"
-        style={{
-          opacity: 0.4,
-          animation: 'chevron-bounce 2s ease-in-out infinite',
-        }}
-        aria-hidden="true"
-      >
-        <ChevronDown
-          size={24}
-          style={{ color: 'var(--color-text-muted)' }}
-        />
+      {/* Layer 4: Toolbar (docked at bottom) */}
+      <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2">
+        <HeroToolbar activeTab={activeTab} onTabChange={handleTabChange} />
       </div>
-
-      {/* Chevron bounce animation */}
-      <style jsx>{`
-        @keyframes chevron-bounce {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(6px);
-          }
-        }
-      `}</style>
     </section>
   );
 }
