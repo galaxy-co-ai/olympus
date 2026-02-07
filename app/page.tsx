@@ -15,6 +15,7 @@ import { SPORTS, getTopCountries, getTotalMedals } from '@/lib/data';
 import { SportCardGrid } from '@/components/sports';
 import { MedalTable } from '@/components/data';
 import { HeroSection } from '@/components/hero';
+import { StorySection } from '@/components/story';
 
 export default function Home() {
   const topCountries = getTopCountries(10);
@@ -109,6 +110,16 @@ export default function Home() {
             </Link>
           </div>
         </section>
+
+        {/* ================================================================
+            SECTION 4: SCROLL STORYTELLING
+            "The Story of Milan Cortina 2026" — editorial narrative experience
+            Subtle background tint to visually separate from data sections
+            Reference: OLYMPUS_CONSTITUTION.md Section 7
+            ================================================================ */}
+        <div style={{ backgroundColor: 'var(--color-bg-secondary)' }}>
+          <StorySection />
+        </div>
       </div>
     </div>
   );
