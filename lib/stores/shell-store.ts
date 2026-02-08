@@ -12,7 +12,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type DrawerTab = 'feed' | 'schedule' | 'medals';
+export type DrawerTab = 'schedule' | 'medals';
 
 interface ShellState {
   // Sidebar
@@ -46,7 +46,7 @@ export const useShellStore = create<ShellState>()(
 
       // Drawer defaults
       drawerOpen: true,
-      drawerTab: 'feed',
+      drawerTab: 'schedule',
       toggleDrawer: () => set((state) => ({ drawerOpen: !state.drawerOpen })),
       setDrawerOpen: (open) => set({ drawerOpen: open }),
       setDrawerTab: (tab) => set({ drawerTab: tab }),

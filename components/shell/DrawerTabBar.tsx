@@ -3,7 +3,7 @@
 /**
  * DrawerTabBar — Tab switcher in RightDrawer
  *
- * Three tabs: Feed, Schedule, Medals
+ * Two tabs: Schedule, Medals
  * Uses layoutId for animated indicator
  */
 
@@ -12,7 +12,6 @@ import { cn } from '@/lib/utils';
 import { useShellStore, type DrawerTab } from '@/lib/stores/shell-store';
 
 const TABS: { id: DrawerTab; label: string }[] = [
-  { id: 'feed', label: 'Feed' },
   { id: 'schedule', label: 'Schedule' },
   { id: 'medals', label: 'Medals' },
 ];

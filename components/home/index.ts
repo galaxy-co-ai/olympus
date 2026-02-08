@@ -1,10 +1,13 @@
 /**
  * Home Components — Barrel Export
  *
- * Reference: OLYMPUS_CONSTITUTION.md
- * Homepage dashboard components for the broadcast-style experience
+ * Dashboard components for CenterStage home view
  */
 
+export { FeaturedHighlight } from './FeaturedHighlight';
+export { EventFeed } from './EventFeed';
+
+// Legacy — still exported for other consumers, will clean up later
 export { HeroToolbar, type HeroTab } from './HeroToolbar';
 export { LivePanel } from './LivePanel';
 export { MedalsPanel } from './MedalsPanel';

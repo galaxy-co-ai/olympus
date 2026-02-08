@@ -1,39 +1,34 @@
-# Olympus — Claude Code Instructions
+# Olympus — CLAUDE.md
 
-> Milan Cortina 2026 Winter Olympics Web Experience
+## Quick Start
 
-## Constitution Reference
+```bash
+pnpm dev      # Dev server (http://localhost:3011)
+pnpm build    # Production build
+pnpm lint     # ESLint
+```
 
-The full specification lives in `OLYMPUS_CONSTITUTION.md` (~1,560 lines). Reference section numbers when implementing:
+## Project Overview
 
-| Section | Lines | Contents |
-|---------|-------|----------|
-| I. Design Philosophy | 13-91 | Rauno's enforced rules, inspiration roster |
-| 1. Hero | 99-118 | Landing experience spec |
-| 2. Navigation | 123-271 | Four-layer nav system |
-| 3. Country Vibe | 274-598 | **Complete** — theme architecture, Olympus palette |
-| 4. Sport Cards | 601-830 | **Complete** — card anatomy, grid, transitions |
-| 5. Data Viz | 833-874 | Medal tracker, charts |
-| 6. Schedule | 876-897 | Timeline, day selector |
-| III. Technical | 1088-1168 | Stack, file structure, code standards |
-| VII. Data & AI | 1260-1558 | Firecrawl, Perplexity, Claude integration |
+| Key | Value |
+|-----|-------|
+| **Type** | Web app — Olympics tracking hub |
+| **Stack** | Next.js 16 (App Router), TypeScript strict, Tailwind v4, Framer Motion, Zustand |
+| **Search** | cmdk + Fuse.js (local), Perplexity API (AI search) |
+| **AI** | Anthropic Claude (insight buttons + companion chat) |
+| **Data** | Firecrawl scraping → JSON cache → Zod validated static fallback |
+| **Hosting** | Vercel |
+| **Port** | 3011 |
 
-## Stack
+## What This Is
 
-- **Next.js 16** with App Router (Turbopack)
-- **TypeScript** strict mode
-- **Tailwind CSS v4** with CSS custom properties
-- **Framer Motion** for layout animations
-- **Zustand** for state
-- **Zod** for validation
-- **cmdk** for command palette
-- **next-themes** for dark/light mode
+A well-engineered hub for following the 2026 Milan Cortina Winter Olympics. Data-first, scannable, real-time. Think Linear/Arc workspace, not a magazine or blog.
 
-## Workspace Shell Architecture
+**It is NOT:** An editorial site, a news feed, or a scroll storytelling experience. Every screen exists to help users track what's happening in the Games.
 
-The app uses a Linear/Arc style workspace shell. The shell never unmounts; content swaps in CenterStage.
+## Architecture — Workspace Shell
 
-### 4-Zone Grid Layout
+4-zone CSS Grid. Shell never unmounts; content swaps in CenterStage.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -44,121 +39,131 @@ The app uses a Linear/Arc style workspace shell. The shell never unmounts; conte
 └────────────┴─────────────────────┴──────────────┘
 ```
 
-### Key Files
+### Key Shell Files
 
 ```
-lib/stores/shell-store.ts       # Zustand state (sidebar, drawer, search)
 components/shell/
-  WorkspaceShell.tsx            # CSS Grid container + responsive layouts
-  TopBar.tsx                    # Breadcrumb + search + controls
-  Sidebar.tsx                   # Icon-driven nav, collapsible
-  SidebarItem.tsx               # Nav item with layoutId active pill
-  CenterStage.tsx               # Content viewport with route transitions
-  RightDrawer.tsx               # 3-tab drawer (Feed/Schedule/Medals)
-  MobileTopBar.tsx              # Mobile header
-  MobileSidebarOverlay.tsx      # Sidebar overlay for mobile
-  MobileBottomSheet.tsx         # Drawer as bottom sheet for mobile
+  WorkspaceShell.tsx      # CSS Grid container + responsive
+  TopBar.tsx              # Breadcrumb + search + controls
+  Sidebar.tsx             # Collapsible nav, layoutId active pill
+  CenterStage.tsx         # Content viewport with route transitions
+  RightDrawer.tsx         # 2-tab drawer (Schedule/Medals)
+  Mobile*.tsx             # Mobile overlay, bottom sheet
+lib/stores/shell-store.ts # Zustand (sidebar, drawer, search state)
 ```
 
 ### Keyboard Shortcuts
 
-- `⌘K` / `Ctrl+K`: Open command palette
+- `⌘K` / `Ctrl+K`: Command palette
 - `⌘B` / `Ctrl+B`: Toggle sidebar
 - `⌘\` / `Ctrl+\`: Toggle drawer
-- `⌘.` / `Ctrl+.`: Toggle drawer (alternative)
 
-### Responsive Breakpoints
+## Routes
 
-- `<768px` (mobile): Sidebar overlay, drawer as bottom sheet
-- `768-1024px` (tablet): Drawer overlays with scrim
-- `>1024px` (desktop): Full CSS Grid
+| Route | Purpose | Priority |
+|-------|---------|----------|
+| `/` | Dashboard home — live events, today's schedule, medal snapshot | **High** |
+| `/sports` | Sport card grid — 16 sports, live/next/complete status | **High** |
+| `/schedule` | Day-by-day schedule with filters | **High** |
+| `/medals` | Medal tracker leaderboard + data viz | **High** |
+| `/countries` | Country profiles | Medium |
+| `/venues` | Venue explorer | Medium |
+| `/theme` | Design system showcase (portfolio piece) | Low |
 
-## Critical Patterns
+**Removed:** `/stories` route — editorial storytelling is cut from scope.
 
-### Theme Switching (Rauno's Rule)
-Theme changes NEVER trigger transitions. We use:
-- `data-theme` attribute (not class)
-- `disableTransitionOnChange` on ThemeProvider
-- CSS `* { transition-property: none; }` by default
+## Build Order (Hub-First)
 
-### Country Accents
-Country selection applies `data-country="xxx"` to `:root`. CSS handles all color changes — no React re-renders.
+1. ~~Foundation~~ ✅ (CSS tokens, themes, typography, Zod schemas)
+2. ~~Shell~~ ✅ (WorkspaceShell, TopBar, Sidebar, CenterStage, Drawer)
+3. **Home dashboard** — compact hero + live panels (not cinematic landing)
+4. **Sport cards** — grid with live/next/complete status, card-to-detail transitions
+5. **Schedule** — day selector, event list, filtering, timezone
+6. **Medal tracker** — leaderboard, animated counters, country drill-down
+7. **Data viz** — charts, medal map, athlete profiles
+8. **Search** — wire command palette to Perplexity
+9. **AI layer** — Claude insight buttons + companion chat
+10. **Polish** — loading states, remaining country themes, easter eggs, responsive pass
 
-### Typography
-- All numbers use `font-variant-numeric: tabular-nums`
-- No font weights below 400
-- `-webkit-font-smoothing: antialiased` globally
-- Fluid type scale with `clamp()`
+## Design System
 
-### Accessibility
-- Focus rings via `box-shadow` (not outline)
-- `@media (hover: hover)` for hover states
+Full specification in `OLYMPUS_CONSTITUTION.md`. Key points:
+
+- **Rauno's rules enforced** — quality bar checklist in Section I
+- **3-tier theming:** Olympus base palette → semantic tokens → country accents
+- **800+ lines of CSS custom properties** in `globals.css`
+- **15 country themes** with light/dark variants, applied via `data-country` on `:root`
+- **All colors through semantic tokens** — zero hardcoded hex in components
+
+### Critical Patterns
+
+- Theme switching is INSTANT — no transitions (Rauno's rule)
+- `data-theme` attribute (not class) via next-themes
+- Country accents via `data-country` on `:root` — CSS-only, no React re-renders
+- `tabular-nums` on ALL numbers
+- Focus rings via `box-shadow`, not outline
+- Hover states behind `@media (hover: hover)`
 - Touch targets >= 44px
-- `prefers-reduced-motion` respected
-- ARIA roles on shell zones (banner, navigation, main)
+- `prefers-reduced-motion` respected everywhere
 
 ## File Structure
 
 ```
 app/                    # Routes
 components/
-  shell/                # Workspace shell (TopBar, Sidebar, CenterStage, etc.)
-  ui/                   # Primitives (Button, Card, etc.)
-  nav/                  # Legacy nav utilities (NavLink, useScrollDirection)
-  theme/                # ThemeProvider, CountryProvider
+  shell/                # Workspace shell (7 zone components)
+  hero/                 # Landing/dashboard components
   sports/               # Sport cards, detail views
+  schedule/             # Timeline, day selector, filters
   data/                 # Charts, medal tracker
   search/               # CommandPalette, SearchResults
+  home/                 # Dashboard panels (Live, Schedule, Medals)
+  ui/                   # Primitives (Button, Select, Skeleton, Toast)
+  theme/                # ThemeProvider, CountryProvider
+  nav/                  # Legacy nav utilities
+  footer/               # Footer + Olympic rings
+  easter-egg/           # Konami code
 lib/
-  stores/               # Zustand stores (shell-store)
-  data/                 # Static Olympic data
+  stores/               # Zustand (shell-store)
+  data/                 # Static Olympic data (sports, medals, schedule)
   types/                # Zod schemas + TypeScript types
-  utils/                # cn(), formatters
-  hooks/                # Custom hooks (useCommandK, useShellShortcuts, etc.)
+  themes/               # Country theme definitions
+  hooks/                # useCommandK, useShellShortcuts, useFavorites, useSearch
+  search/               # Search index (Fuse.js)
+  utils/                # cn(), timezone
+```
+
+## Environment
+
+Required `.env.local`:
+```bash
+FIRECRAWL_API_KEY=
+PERPLEXITY_API_KEY=
+ANTHROPIC_API_KEY=
+NEXT_PUBLIC_APP_URL=
 ```
 
 ## Gotchas
 
 1. **Tailwind v4** uses `@theme inline` block, not `theme.extend` in config
-2. **next-themes** must use `attribute="data-theme"` to match our CSS
+2. **next-themes** uses `attribute="data-theme"` to match our CSS
 3. **Inter** loads via next/font — use `--font-inter` CSS variable
-4. **Country codes** are ISO 3166-1 alpha-3 lowercase (usa, nor, jpn, etc.)
-5. **Shell never unmounts** — routes swap in CenterStage, shell stays static
-6. **Drawer content components** (DrawerFeed, DrawerSchedule, DrawerMedals) are adapted from home panels
+4. **Country codes** are ISO 3166-1 alpha-3 lowercase (usa, nor, jpn)
+5. **Shell never unmounts** — routes swap in CenterStage only
+6. **Port 3011** — custom dev port, not 3000
+7. **No story/editorial components** — scroll storytelling is cut from scope
+8. **Home = dashboard**, not cinematic hero. Compact, data-dense, functional.
 
-## Commands
+## Constitution Reference
 
-```bash
-pnpm dev      # Start dev server (Turbopack)
-pnpm build    # Production build
-pnpm lint     # ESLint
-pnpm typecheck # TypeScript check (add to scripts)
-```
+`OLYMPUS_CONSTITUTION.md` has the detailed specs. Key sections:
 
-## Current State
-
-**Foundation Complete:**
-- [x] Project scaffolded with Next.js 16
-- [x] Complete CSS token system (800+ lines)
-- [x] Dark/light theme provider
-- [x] Country accent system (15 countries)
-- [x] Typography scale with fluid clamp()
-- [x] Glass effect utility
-- [x] Skeleton animation
-- [x] Route placeholders
-- [x] Zod schemas for data types
-
-**Shell Complete:**
-- [x] WorkspaceShell with CSS Grid layout
-- [x] TopBar with breadcrumb, search, controls
-- [x] Sidebar with collapsible nav and layoutId animations
-- [x] CenterStage with AnimatePresence route transitions
-- [x] RightDrawer with 3 tabs (Feed/Schedule/Medals)
-- [x] Mobile sidebar overlay
-- [x] Mobile bottom sheet drawer
-- [x] Keyboard shortcuts (⌘K, ⌘B, ⌘\)
-- [x] Zustand store with localStorage persistence
-
-**Next Up:**
-- [ ] Hero (Section 1)
-- [ ] Sport cards (Section 4)
+| Section | What |
+|---------|------|
+| I. Design Philosophy | Rauno's enforced quality bar rules |
+| 3. Country Vibe | Complete 3-tier theme architecture |
+| 4. Sport Cards | Card anatomy, grid, transitions, interactions |
+| 5. Data Viz | Medal tracker, charts, athlete profiles |
+| 6. Schedule | Timeline, day selector, filtering |
+| III. Technical | Stack, code standards, file structure |
+| VII. Data & AI | Firecrawl, Perplexity, Claude integration |

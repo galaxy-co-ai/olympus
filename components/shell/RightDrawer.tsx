@@ -4,7 +4,7 @@
  * RightDrawer — Right panel in workspace shell
  *
  * Contains:
- * - Tab bar at top (Feed/Schedule/Medals)
+ * - Tab bar at top (Schedule/Medals)
  * - Scrollable content area
  * - Open/close with translateX animation
  * - Keyboard: Cmd+. / Ctrl+. to toggle
@@ -19,7 +19,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useShellStore } from '@/lib/stores/shell-store';
 import { DrawerTabBar } from './DrawerTabBar';
-import { DrawerFeed } from './DrawerFeed';
 import { DrawerSchedule } from './DrawerSchedule';
 import { DrawerMedals } from './DrawerMedals';
 
@@ -46,7 +45,6 @@ export function RightDrawer({ className }: RightDrawerProps) {
 
   // Get content component based on active tab
   const TabContent = {
-    feed: DrawerFeed,
     schedule: DrawerSchedule,
     medals: DrawerMedals,
   }[drawerTab];

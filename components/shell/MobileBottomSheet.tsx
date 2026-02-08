@@ -13,7 +13,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence, useDragControls, PanInfo } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useShellStore, type DrawerTab } from '@/lib/stores/shell-store';
-import { DrawerFeed } from './DrawerFeed';
 import { DrawerSchedule } from './DrawerSchedule';
 import { DrawerMedals } from './DrawerMedals';
 
@@ -26,7 +25,6 @@ const SNAP_HEIGHTS: Record<SnapPoint, string> = {
 };
 
 const TAB_LABELS: Record<DrawerTab, string> = {
-  feed: 'Feed',
   schedule: 'Schedule',
   medals: 'Medals',
 };
@@ -46,7 +44,6 @@ export function MobileBottomSheet({ className }: MobileBottomSheetProps) {
 
   // Get content component based on active tab
   const TabContent = {
-    feed: DrawerFeed,
     schedule: DrawerSchedule,
     medals: DrawerMedals,
   }[drawerTab];
