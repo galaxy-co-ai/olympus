@@ -153,6 +153,8 @@ NEXT_PUBLIC_APP_URL=
 6. **Port 3011** — custom dev port, not 3000
 7. **No story/editorial components** — scroll storytelling is cut from scope
 8. **Home = dashboard**, not cinematic hero. Compact, data-dense, functional.
+9. **useRolodex curves are inverted** — `scrollYProgress` with `['start end', 'end start']` maps edges→0/1, center→0.5. Output arrays: edges get max values (1.0), center gets min values (0.88/0.15). Counterintuitive but correct.
+10. **CenterStage steals scroll** — Inner containers need explicit `height` (not just `max-h`) + `overflow-y-auto` to scroll independently from CenterStage's own overflow.
 
 ## Constitution Reference
 

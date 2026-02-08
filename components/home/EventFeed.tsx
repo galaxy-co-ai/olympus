@@ -1,127 +1,26 @@
 'use client';
 
 /**
- * EventFeed — Compact event card grid for dashboard CenterStage
+ * EventFeed — Rolodex drum timeline
  *
- * Shows remaining events (excluding featured) grouped by status:
- * Live Now → Coming Up → Completed
+ * Vertical timeline with scroll-driven depth effect. The center pill
+ * auto-expands into a hero card; pills above/below shrink and fade
+ * like a physical rolodex drum.
+ *
+ * - Drum viewport is fixed height, forcing scroll
+ * - Scroll position determines which pill is "center" (auto-expanded)
+ * - Spine + pills scroll together inside one container
+ * - Click any pill to scroll it to center
  */
 
+import { useRef, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import * as LucideIcons from 'lucide-react';
-import { Circle, Medal, Check, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react';
+import { LayoutGroup } from 'framer-motion';
+
 import { getTodaysEvents } from '@/lib/data/schedule';
-import { SPORTS } from '@/lib/data/sports';
-import type { ScheduleEvent } from '@/lib/types/olympics';
-
-function getIconComponent(iconName: string) {
-  const pascalName = iconName
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const icons = LucideIcons as Record<string, any>;
-  return icons[pascalName] || Circle;
-}
-
-function SectionHeader({ children }: { children: React.ReactNode }) {
-  return (
-    <h3
-      className="mb-3 uppercase tracking-[0.08em]"
-      style={{
-        fontSize: '11px',
-        color: 'var(--color-text-muted)',
-      }}
-    >
-      {children}
-    </h3>
-  );
-}
-
-function EventCard({ event }: { event: ScheduleEvent }) {
-  const sport = SPORTS.find((s) => s.id === event.sport);
-  const Icon = sport ? getIconComponent(sport.icon) : Circle;
-  const isLive = event.status === 'live';
-  const isCompleted = event.status === 'completed';
-
-  return (
-    <Link
-      href={`/sports/${event.sport}`}
-      className={cn(
-        'group flex flex-col gap-2 rounded-lg p-3',
-        'transition-all duration-150',
-        '@media(hover:hover):hover:-translate-y-px',
-        '@media(hover:hover):hover:shadow-sm',
-        isCompleted && 'opacity-50'
-      )}
-      style={{
-        backgroundColor: 'var(--color-bg-secondary)',
-      }}
-    >
-      {/* Top: icon + time/status */}
-      <div className="flex items-center justify-between">
-        <Icon
-          size={18}
-          style={{
-            color: isLive
-              ? 'var(--color-live)'
-              : 'var(--country-accent-primary)',
-          }}
-        />
-        <div className="flex items-center gap-1.5">
-          {isLive && (
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
-            </span>
-          )}
-          {isCompleted ? (
-            <Check size={13} style={{ color: 'var(--color-text-muted)' }} />
-          ) : (
-            <span
-              className="tabular-nums"
-              style={{
-                fontSize: '11px',
-                color: isLive
-                  ? 'var(--color-live)'
-                  : 'var(--color-text-muted)',
-              }}
-            >
-              {event.time}
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Event name */}
-      <p
-        className="line-clamp-2 font-medium leading-snug"
-        style={{
-          fontSize: 'var(--text-small)',
-          color: 'var(--color-text-primary)',
-        }}
-      >
-        {event.event}
-      </p>
-
-      {/* Sport name + medal badge */}
-      <div className="flex items-center justify-between">
-        <span
-          style={{
-            fontSize: '11px',
-            color: 'var(--color-text-muted)',
-          }}
-        >
-          {sport?.name}
-        </span>
-        {event.isMedalEvent && (
-          <Medal size={12} style={{ color: 'var(--color-gold)' }} />
-        )}
-      </div>
-    </Link>
-  );
-}
+import { TimelineSpine } from './timeline/TimelineSpine';
+import { TimelinePill } from './timeline/TimelinePill';
 
 /**
  * Pick the featured event (same logic as FeaturedHighlight)
@@ -145,14 +44,105 @@ function getFeaturedEventId(): string | null {
   return events[0]?.id ?? null;
 }
 
+/** Drum fills remaining viewport below hero (topbar 56 + padding 32 + hero ~200 + gap 24 + bottom 24) */
+const DRUM_HEIGHT = 'calc(100vh - 336px)';
+/** Hysteresis threshold — current center pill "sticks" unless this far from center */
+const HYSTERESIS_PX = 80;
+
 export function EventFeed() {
   const allEvents = getTodaysEvents();
   const featuredId = getFeaturedEventId();
   const events = allEvents.filter((e) => e.id !== featuredId);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const anchorPillRef = useRef<HTMLDivElement>(null);
 
-  const liveEvents = events.filter((e) => e.status === 'live');
-  const upcomingEvents = events.filter((e) => e.status === 'upcoming');
-  const completedEvents = events.filter((e) => e.status === 'completed');
+  // Find the best anchor: first live event in feed, or first upcoming
+  const anchorId =
+    events.find((e) => e.status === 'live')?.id ??
+    events.find((e) => e.status === 'upcoming')?.id ??
+    null;
+
+  // On mount, scroll so the anchor event sits in the center of the drum
+  const hasScrolled = useRef(false);
+  useEffect(() => {
+    if (hasScrolled.current || !anchorPillRef.current || !scrollContainerRef.current) return;
+    hasScrolled.current = true;
+
+    const container = scrollContainerRef.current;
+    const pill = anchorPillRef.current;
+    const pillTop = pill.offsetTop;
+    const pillHeight = pill.offsetHeight;
+    const containerHeight = container.clientHeight;
+
+    container.scrollTop = pillTop - containerHeight / 2 + pillHeight / 2;
+  }, [anchorId]);
+
+  // Scroll-driven auto-expand: the pill closest to center is always expanded
+  const detectCenter = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const rect = container.getBoundingClientRect();
+    const centerY = rect.top + rect.height / 2;
+
+    const pills = container.querySelectorAll<HTMLElement>('[data-event-id]');
+    let bestId: string | null = null;
+    let bestDist = Infinity;
+
+    pills.forEach((el) => {
+      const r = el.getBoundingClientRect();
+      const dist = Math.abs(r.top + r.height / 2 - centerY);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestId = el.dataset.eventId ?? null;
+      }
+    });
+
+    if (bestId) {
+      setExpandedId((prev) => {
+        if (prev === bestId) return prev;
+        // Hysteresis: keep current center pill if it's still close
+        if (prev) {
+          const currentEl = container.querySelector<HTMLElement>(
+            `[data-event-id="${prev}"]`
+          );
+          if (currentEl) {
+            const cr = currentEl.getBoundingClientRect();
+            const cd = Math.abs(cr.top + cr.height / 2 - centerY);
+            if (cd < HYSTERESIS_PX) return prev;
+          }
+        }
+        return bestId;
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(() => {
+          detectCenter();
+          ticking = false;
+        });
+      }
+    };
+
+    container.addEventListener('scroll', onScroll, { passive: true });
+
+    // Initial detection after mount + auto-scroll settles
+    const timer = setTimeout(detectCenter, 200);
+
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      clearTimeout(timer);
+    };
+  }, [detectCenter]);
 
   if (events.length === 0) {
     return (
@@ -178,66 +168,55 @@ export function EventFeed() {
     );
   }
 
+  // Build spine dots from events (deduplicated by time)
+  const seenTimes = new Set<string>();
+  const spineDots = events
+    .filter((e) => {
+      if (seenTimes.has(e.time)) return false;
+      seenTimes.add(e.time);
+      return true;
+    })
+    .map((e) => ({
+      time: e.time,
+      status: e.status as 'live' | 'upcoming' | 'completed',
+    }));
+
   return (
-    <div className="space-y-6">
-      {/* Live Now */}
-      {liveEvents.length > 0 && (
-        <section>
-          <SectionHeader>
-            <span className="flex items-center gap-1.5">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
-              </span>
-              Live Now
-            </span>
-          </SectionHeader>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {liveEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        </section>
-      )}
+    <div className="space-y-4">
+      {/* Drum viewport — spine + pills scroll together */}
+      <div
+        ref={scrollContainerRef}
+        className="overflow-y-auto pr-1"
+        style={{
+          height: DRUM_HEIGHT,
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'var(--color-border) transparent',
+        }}
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-[48px_1fr] gap-0 sm:gap-2">
+          {/* Spine — desktop only */}
+          <TimelineSpine dots={spineDots} />
 
-      {/* Coming Up */}
-      {upcomingEvents.length > 0 && (
-        <section>
-          <SectionHeader>Coming Up</SectionHeader>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {upcomingEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
+          {/* Pills column */}
+          <div
+            className="flex flex-col gap-2"
+            style={{ perspective: '1200px' }}
+          >
+            <LayoutGroup>
+              {events.map((event) => (
+                <TimelinePill
+                  key={event.id}
+                  event={event}
+                  isExpanded={expandedId === event.id}
+                  containerRef={scrollContainerRef}
+                  externalRef={event.id === anchorId ? anchorPillRef : undefined}
+                />
+              ))}
+            </LayoutGroup>
           </div>
-        </section>
-      )}
-
-      {/* Completed */}
-      {completedEvents.length > 0 && (
-        <section>
-          <SectionHeader>Completed</SectionHeader>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {completedEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Full schedule link */}
-      <div className="pt-2">
-        <Link
-          href="/schedule"
-          className="inline-flex items-center gap-1 transition-colors"
-          style={{
-            fontSize: 'var(--text-small)',
-            color: 'var(--country-accent-primary)',
-          }}
-        >
-          View Full Schedule
-          <ChevronRight size={14} />
-        </Link>
+        </div>
       </div>
+
     </div>
   );
 }
