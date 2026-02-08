@@ -63,8 +63,7 @@ export function FeaturedHighlight() {
         'group relative flex flex-col gap-4 rounded-xl p-6 sm:p-8',
         'transition-all duration-150',
         '@media(hover:hover):hover:-translate-y-px',
-        '@media(hover:hover):hover:shadow-lg',
-        isLive && 'border-l-[3px] border-red-500'
+        '@media(hover:hover):hover:shadow-lg'
       )}
       style={{
         background: isLive

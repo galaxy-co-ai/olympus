@@ -163,8 +163,7 @@ export function EventCard({
         'focus-visible:outline-none focus-visible:ring-2',
         // Non-live cards get secondary bg
         !isLive && 'bg-[var(--color-bg-secondary)]',
-        // Live card special styling
-        isLive && 'border-l-[3px] border-red-500',
+        // Live card special styling (badge handles the indicator)
         // Completed cards slightly muted
         isCompleted && 'opacity-75'
       )}

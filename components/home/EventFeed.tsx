@@ -53,7 +53,6 @@ function EventCard({ event }: { event: ScheduleEvent }) {
         'transition-all duration-150',
         '@media(hover:hover):hover:-translate-y-px',
         '@media(hover:hover):hover:shadow-sm',
-        isLive && 'border-l-2 border-red-500',
         isCompleted && 'opacity-50'
       )}
       style={{

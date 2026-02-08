@@ -52,7 +52,6 @@ function LiveEventRow({ event }: { event: ScheduleEvent }) {
       href={`/sports/${event.sport}`}
       className={cn(
         'flex items-center gap-3 p-3 rounded-lg',
-        'border-l-2 border-red-500',
         'transition-colors duration-150',
         'hover:bg-[var(--color-surface-hover)]'
       )}

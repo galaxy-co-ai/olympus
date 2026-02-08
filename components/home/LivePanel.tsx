@@ -105,7 +105,6 @@ function LiveEventCard({ event }: { event: ScheduleEvent }) {
       href={`/sports/${event.sport}`}
       className={cn(
         'group relative flex items-center gap-4 rounded-xl p-4 sm:p-5',
-        'border-l-[3px] border-red-500',
         'transition-all duration-150',
         '@media(hover:hover):hover:-translate-y-px',
         '@media(hover:hover):hover:shadow-md'
