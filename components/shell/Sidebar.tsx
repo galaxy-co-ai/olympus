@@ -102,7 +102,7 @@ export function Sidebar({ className }: SidebarProps) {
       </div>
 
       {/* Nav items */}
-      <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
+      <nav className="scrollbar-hide flex-1 py-4 px-2 space-y-1 overflow-y-auto">
         {NAV_ITEMS.map((item) => (
           <SidebarItem
             key={item.href}

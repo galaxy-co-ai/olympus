@@ -36,8 +36,7 @@ export function VideoQueue({ videos, activeIndex, onSelect }: VideoQueueProps) {
   return (
     <div
       ref={containerRef}
-      className="flex h-full flex-col gap-1 overflow-y-auto overflow-x-hidden pr-1"
-      style={{ scrollbarWidth: 'thin' }}
+      className="scrollbar-hide flex h-full flex-col gap-1 overflow-y-auto overflow-x-hidden"
     >
       <h2
         className="sticky top-0 z-10 px-2 pb-2 pt-1 text-xs font-semibold uppercase tracking-wider"

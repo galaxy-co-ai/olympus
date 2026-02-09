@@ -27,7 +27,7 @@ export function CenterStage({ children, className }: CenterStageProps) {
     <main
       id="main-content"
       className={cn(
-        'overflow-y-auto overflow-x-hidden',
+        'scrollbar-hide overflow-y-auto overflow-x-hidden',
         'p-6 lg:p-8',
         className
       )}
