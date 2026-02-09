@@ -8,8 +8,36 @@
  */
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { getTopCountries, getTotalMedals } from '@/lib/data';
+
+/** Tinted medal chip — dimmed when count is 0 */
+function MedalCell({ count, type }: { count: number; type: 'gold' | 'silver' | 'bronze' }) {
+  const colorMap = {
+    gold: { bg: 'rgba(212, 160, 23, 0.12)', text: 'var(--color-gold)' },
+    silver: { bg: 'rgba(168, 168, 168, 0.12)', text: 'var(--color-silver)' },
+    bronze: { bg: 'rgba(205, 127, 50, 0.12)', text: 'var(--color-bronze)' },
+  };
+  const isZero = count === 0;
+  const colors = colorMap[type];
+
+  return (
+    <span
+      className={cn(
+        'flex h-6 w-7 items-center justify-center rounded text-center tabular-nums text-xs',
+        isZero ? 'font-normal' : 'font-medium'
+      )}
+      style={{
+        backgroundColor: isZero ? 'transparent' : colors.bg,
+        color: isZero ? 'var(--color-text-muted)' : colors.text,
+      }}
+    >
+      {count}
+    </span>
+  );
+}
 
 const COUNTRY_FLAGS: Record<string, string> = {
   NOR: '🇳🇴',
@@ -84,8 +112,13 @@ export function DrawerMedals() {
 
         {/* Rows */}
         {topCountries.map((country, index) => (
-          <Link
+          <motion.div
             key={country.code}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, delay: index * 0.04, ease: [0.4, 0, 0.2, 1] }}
+          >
+          <Link
             href={`/countries/${country.code.toLowerCase()}`}
             className="grid grid-cols-[auto_1fr_32px_32px_32px_40px] gap-2 px-3 py-2.5 items-center
               transition-colors duration-150 hover:bg-[var(--color-surface-hover)]"
@@ -112,23 +145,14 @@ export function DrawerMedals() {
                 {country.name}
               </span>
             </span>
-            <span
-              className="text-center tabular-nums font-medium"
-              style={{ color: 'var(--color-text-primary)' }}
-            >
-              {country.medals.gold}
+            <span className="flex justify-center">
+              <MedalCell count={country.medals.gold} type="gold" />
             </span>
-            <span
-              className="text-center tabular-nums"
-              style={{ color: 'var(--color-text-secondary)' }}
-            >
-              {country.medals.silver}
+            <span className="flex justify-center">
+              <MedalCell count={country.medals.silver} type="silver" />
             </span>
-            <span
-              className="text-center tabular-nums"
-              style={{ color: 'var(--color-text-secondary)' }}
-            >
-              {country.medals.bronze}
+            <span className="flex justify-center">
+              <MedalCell count={country.medals.bronze} type="bronze" />
             </span>
             <span
               className="text-center tabular-nums font-medium"
@@ -137,6 +161,7 @@ export function DrawerMedals() {
               {country.medals.total}
             </span>
           </Link>
+          </motion.div>
         ))}
       </div>
 

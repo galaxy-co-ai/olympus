@@ -43,3 +43,8 @@ export {
   TICKER_ATHLETES,
   type TickerAthlete,
 } from './athletes';
+
+export {
+  SPORT_AMBIENT_COLORS,
+  getAmbientColor,
+} from './sport-colors';

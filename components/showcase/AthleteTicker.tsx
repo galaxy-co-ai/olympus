@@ -24,9 +24,9 @@ export function AthleteTicker() {
         backgroundColor: 'var(--color-bg-secondary)',
         border: '1px solid var(--color-border)',
         maskImage:
-          'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
+          'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
         WebkitMaskImage:
-          'linear-gradient(to right, transparent, black 5%, black 95%, transparent)',
+          'linear-gradient(to right, transparent, black 8%, black 92%, transparent)',
       }}
       role="marquee"
       aria-label="Featured athletes"

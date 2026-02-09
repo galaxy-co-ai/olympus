@@ -13,6 +13,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getVideoThumbnail } from '@/lib/data/videos';
@@ -112,30 +113,80 @@ export function VideoPlayer({ video, isPlaying, onPlay, onEnded }: VideoPlayerPr
             priority
           />
 
-          {/* Play button overlay */}
+          {/* Top vignette for cinematic wrap */}
+          <div
+            className="absolute inset-x-0 top-0 pointer-events-none"
+            style={{
+              height: '30%',
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 100%)',
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Play button overlay — frosted glass */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div
               className={cn(
-                'flex h-16 w-16 items-center justify-center rounded-full transition-interactive',
-                'bg-[rgba(0,0,0,0.7)] group-hover:bg-[rgba(0,0,0,0.85)] group-hover:scale-110'
+                'play-button-glass flex h-16 w-16 items-center justify-center rounded-full transition-interactive',
               )}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(16px) saturate(1.5)',
+                WebkitBackdropFilter: 'blur(16px) saturate(1.5)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+              }}
             >
               <Play className="ml-1 h-7 w-7 text-white" fill="white" />
             </div>
           </div>
 
-          {/* Bottom gradient with title */}
-          <div
-            className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-4"
-            style={{
-              background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)',
-              minHeight: '40%',
-            }}
-          >
-            <span className="text-sm font-medium text-white/70">{video.sport}</span>
-            <h3 className="text-lg font-semibold text-white leading-snug">{video.title}</h3>
-          </div>
+          {/* Bottom gradient with title — animated on video change */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={video.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              className="absolute inset-x-0 bottom-0 flex flex-col justify-end p-4"
+              style={{
+                background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 40%, transparent 100%)',
+                minHeight: '40%',
+              }}
+            >
+              <span
+                className="inline-flex w-fit items-center rounded-full px-2 py-0.5 text-[11px] uppercase tracking-wider font-medium text-white/80"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(4px)',
+                  WebkitBackdropFilter: 'blur(4px)',
+                }}
+              >
+                {video.sport}
+              </span>
+              <h3
+                className="font-semibold text-white leading-snug mt-1.5"
+                style={{ fontSize: 'clamp(18px, 2vw, 24px)' }}
+              >
+                {video.title}
+              </h3>
+            </motion.div>
+          </AnimatePresence>
+
         </button>
+      )}
+
+      {/* Accent progress bar — animates during playback */}
+      {isPlaying && (
+        <div
+          key={video.id}
+          className="absolute inset-x-0 bottom-0 h-0.5 origin-left"
+          style={{
+            backgroundColor: 'var(--country-accent-primary)',
+            animation: `progress-bar ${video.duration}s linear forwards`,
+          }}
+          aria-hidden="true"
+        />
       )}
     </div>
   );

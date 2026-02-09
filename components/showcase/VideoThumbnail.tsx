@@ -27,11 +27,12 @@ export function VideoThumbnail({ video, index, isActive, onClick }: VideoThumbna
         'group flex w-full gap-3 rounded-lg p-2 text-left transition-interactive',
         'border-l-2',
         isActive
-          ? 'border-l-[var(--country-accent-primary)] bg-[var(--country-accent-surface)]'
+          ? 'border-l-[var(--country-accent-primary)] bg-[var(--country-accent-surface)] scale-[1.02]'
           : 'border-l-transparent hover:bg-[var(--color-surface-hover)]'
       )}
       aria-label={`Play ${video.title}`}
       aria-current={isActive ? 'true' : undefined}
+      style={isActive ? { boxShadow: '0 0 0 1px var(--country-accent-glow), 0 2px 8px var(--country-accent-glow)' } : undefined}
     >
       {/* Thumbnail */}
       <div className="relative h-[56px] w-[100px] shrink-0 overflow-hidden rounded-md"
@@ -60,8 +61,10 @@ export function VideoThumbnail({ video, index, isActive, onClick }: VideoThumbna
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
         <span
           className={cn(
-            'line-clamp-2 text-xs font-medium leading-snug',
-            isActive ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]'
+            'line-clamp-2 text-xs leading-snug',
+            isActive
+              ? 'font-semibold text-[var(--color-text-primary)]'
+              : 'font-medium text-[var(--color-text-secondary)]'
           )}
         >
           {video.title}

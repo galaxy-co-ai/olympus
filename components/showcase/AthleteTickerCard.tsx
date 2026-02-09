@@ -3,10 +3,12 @@
 /**
  * AthleteTickerCard — Individual athlete card in the marquee
  *
- * ~180x56px — avatar (initials in 36px circle) | name + sport | flag emoji
- * Uses country accent for avatar background.
+ * ~180x56px — avatar photo (36px circle) | name + sport | flag emoji
+ * Falls back to initials if photo fails to load.
  */
 
+import { useState } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import type { TickerAthlete } from '@/lib/data/athletes';
 
@@ -24,6 +26,9 @@ function getInitials(name: string): string {
 }
 
 export function AthleteTickerCard({ athlete }: AthleteTickerCardProps) {
+  const [imgError, setImgError] = useState(false);
+  const showPhoto = athlete.imageUrl && !imgError;
+
   return (
     <div
       className={cn(
@@ -32,16 +37,31 @@ export function AthleteTickerCard({ athlete }: AthleteTickerCardProps) {
       )}
       style={{ minWidth: 180 }}
     >
-      {/* Avatar circle with initials */}
+      {/* Avatar — photo with initials fallback */}
       <div
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
+        className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full"
         style={{
           backgroundColor: 'var(--country-accent-surface)',
-          color: 'var(--country-accent-primary)',
           border: '1px solid var(--country-accent-muted)',
         }}
       >
-        {getInitials(athlete.name)}
+        {showPhoto ? (
+          <Image
+            src={athlete.imageUrl}
+            alt={athlete.name}
+            fill
+            sizes="36px"
+            className="object-cover"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <span
+            className="flex h-full w-full items-center justify-center text-xs font-semibold"
+            style={{ color: 'var(--country-accent-primary)' }}
+          >
+            {getInitials(athlete.name)}
+          </span>
+        )}
       </div>
 
       {/* Name + sport */}
