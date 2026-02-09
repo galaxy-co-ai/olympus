@@ -1,18 +1,17 @@
 /**
- * Olympus Home Page — Dashboard
+ * Olympus Home Page — Video Showcase
  *
- * CenterStage content: featured event highlight + event feed grid.
- * Schedule and medals live in the RightDrawer tabs.
+ * CenterStage content: video highlight player + queue + athlete ticker.
+ * Replaces the previous FeaturedHighlight + EventFeed (rolodex drum).
+ * Schedule and medals remain in the RightDrawer tabs.
  */
 
-import { FeaturedHighlight } from '@/components/home/FeaturedHighlight';
-import { EventFeed } from '@/components/home/EventFeed';
+import { VideoShowcase } from '@/components/showcase';
 
 export default function Home() {
   return (
-    <div className="space-y-6">
-      <FeaturedHighlight />
-      <EventFeed />
+    <div className="h-full">
+      <VideoShowcase />
     </div>
   );
 }

@@ -180,6 +180,21 @@ export const DataFreshnessSchema = z.object({
 export type DataFreshness = z.infer<typeof DataFreshnessSchema>;
 
 // =============================================================================
+// VIDEO SHOWCASE
+// =============================================================================
+
+export const VideoSchema = z.object({
+  id: z.string(),
+  youtubeId: z.string(),
+  title: z.string(),
+  sport: z.string(),
+  duration: z.number(), // seconds
+  thumbnail: z.string().url().optional(),
+});
+
+export type Video = z.infer<typeof VideoSchema>;
+
+// =============================================================================
 // AI RESPONSES
 // =============================================================================
 

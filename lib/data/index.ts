@@ -32,3 +32,14 @@ export {
   getUniqueSports,
   getEventCountByDate,
 } from './schedule';
+
+export {
+  VIDEOS,
+  getVideoThumbnail,
+  formatDuration,
+} from './videos';
+
+export {
+  TICKER_ATHLETES,
+  type TickerAthlete,
+} from './athletes';

@@ -3,7 +3,7 @@
 ## Milan Cortina 2026 Winter Olympics Web Experience
 
 **Codename:** Olympus
-**Purpose:** A design-forward, portfolio-grade web application reimagining the 2026 Winter Olympics experience. Every component is a deliberate craft challenge, inspired by the world's best design engineers. This is not a news site — it is a living design system that treats Olympic data as the medium for world-class UI/UX exploration.
+**Purpose:** A well-engineered hub for tracking the 2026 Winter Olympics. Data-first, scannable, real-time. Think Linear/Arc workspace — not a magazine, blog, or editorial experience. Every screen exists to help users follow the Games.
 
 **Games:** February 6–22, 2026 | Milan & Cortina d'Ampezzo, Italy
 **Sports:** 16 disciplines, 116 medal events, 15 venues, 93 countries, ~2,900 athletes
@@ -96,35 +96,29 @@ Each section below is a standalone design challenge. They are ordered by visual 
 
 ---
 
-### 1. HERO / LANDING EXPERIENCE
+### 1. HOME DASHBOARD
 
-**The Challenge:** Make someone feel the Olympics in 3 seconds.
+**The Challenge:** Show the user what's happening right now in 3 seconds.
 
 **Specification:**
-- Full-viewport immersive moment on first load
-- No autoplay audio. No loading screen. Immediate visual impact.
-- Cinematic but lightweight — prefer CSS/SVG animation layers over heavy video/WebGL
-- Italian Alpine aesthetic: cold blues, warm golds, Dolomite mountain silhouettes, crisp winter light
-- Kinetic typography for "Milano Cortina 2026" — variable font weight animation on scroll or load
-- Subtle parallax depth: 2–3 layers max (background mountains, midground particle/snow, foreground type)
-- Countdown or "Day X of the Games" indicator — minimal, not a giant clock
-- Smooth scroll-triggered transition into the main content — the hero "dissolves" into the app, never hard-cuts
+- Compact hero banner — "Milano Cortina 2026" branding + "Day X of the Games" indicator
+- Below hero: 3 dashboard panels — Live Events, Today's Schedule, Medal Snapshot
+- Panels pull from Drawer content (LivePanel, SchedulePanel, MedalsPanel) for consistency
+- No full-viewport immersive landing. No parallax. No scroll storytelling.
+- Data-dense, scannable, functional — like a well-designed sports app, not a magazine cover
 
 **Rules:**
-- Hero must load and render in < 1.5 seconds on 4G
-- No WebGL unless it degrades gracefully to a CSS fallback
+- Home must load and render in < 1.5 seconds on 4G
 - Motion must respect `prefers-reduced-motion`
-- Mobile: simplified to typography + gradient — no parallax layers
+- Mobile: single-column stack of dashboard panels
 
 ---
 
 ### 2. NAVIGATION / WAYFINDING
 
-**The Challenge:** Move through 16 sports, 93 countries, 15 venues, and a 17-day schedule without ever feeling lost — while the navigation itself feels like a piece of craft that belongs in a design museum.
+> **NOTE:** The Workspace Shell (TopBar, Sidebar, CenterStage, RightDrawer) replaces the original floating glass bar navigation spec below. The shell is already built. The rules and accessibility patterns from this section still apply. The Layer 1-4 specs are kept for reference but the implementation has diverged to the workspace shell pattern.
 
-**Philosophy:** Navigation is not chrome around the content. It is the first design element users form a relationship with. Every scroll, every tap, every transition teaches the user what kind of experience they're in. Olympus navigation should feel like Apple's precision married to Freiberg's invisible craft — you notice how good it feels only after you stop using it and everything else feels broken.
-
-**The navigation system has four layers, each serving a distinct purpose:**
+**The navigation system originally specified four layers:**
 
 #### Layer 1: The Floating Glass Bar (Desktop)
 
@@ -897,25 +891,9 @@ Country theming modulates these base gradients — the sport personality remains
 
 ---
 
-### 7. SCROLL STORYTELLING SECTION
+### ~~7. SCROLL STORYTELLING SECTION~~ — REMOVED
 
-**The Challenge:** Tell the story of these Olympics as a scroll-driven narrative.
-
-**Specification:**
-- Long-form section (placed below the fold, optional engagement)
-- Content: "The Story of Milan Cortina 2026" — history, venues, the Dolomites, Italy's Olympic legacy (1956 Cortina, 2006 Turin)
-- Scroll-triggered animations: content fades/slides in as user scrolls
-- Pinned sections: key stats or quotes pin while supporting content scrolls past
-- Parallax: subtle, max 2 layers, background image + foreground text
-- Typography showcase: this is where variable font animations shine — weight shifts on scroll, size transitions
-- Photography: full-bleed images of venues (Dolomites, San Siro, Arena di Verona)
-
-**Rules:**
-- Entire section skippable — user can scroll past quickly without getting trapped
-- No scroll-jacking — native scroll behavior only, with `position: sticky` for pinned elements
-- `prefers-reduced-motion`: all scroll animations replaced with simple opacity fades
-- Performance: all images lazy-loaded, IntersectionObserver-driven
-- Mobile: simplified to sequential blocks with fade-in, no parallax or pinning
+> **CUT FROM SCOPE.** Editorial storytelling is not aligned with the hub direction. The `/stories` route and `components/story/` are deprecated. If storytelling is revisited later, it would be a separate concern.
 
 ---
 
@@ -1139,7 +1117,7 @@ olympus/
 │   ├── sports/               # Sport cards, detail views
 │   ├── data/                 # Charts, medal tracker, stats
 │   ├── schedule/             # Timeline, day selector
-│   ├── story/                # Scroll storytelling section
+│   ├── home/                 # Dashboard panels (Live, Schedule, Medals)
 │   └── theme/                # Country vibe system, dark/light toggle
 ├── lib/
 │   ├── themes/               # Country theme definitions
@@ -1175,17 +1153,16 @@ This project is designed to be built incrementally via Claude Code while the dev
 
 **Build Order (recommended):**
 
-1. **Foundation:** Project scaffolding, theme system (CSS custom properties, dark/light mode, 2–3 country themes), typography system, global styles
-2. **Navigation:** Top nav, mobile bottom bar, routing structure
-3. **Hero:** Landing experience with scroll transition
-4. **Sport Cards:** Grid layout, card component, hover/click interactions
-5. **Schedule:** Day selector, event list, filtering
+1. ~~**Foundation:**~~ ✅ CSS tokens, themes, typography, Zod schemas
+2. ~~**Shell:**~~ ✅ WorkspaceShell, TopBar, Sidebar, CenterStage, Drawer
+3. **Home Dashboard:** Compact hero banner + live panels (Live Events, Today's Schedule, Medal Snapshot)
+4. **Sport Cards:** Grid layout, card component, live/next/complete status, hover/click interactions
+5. **Schedule:** Day selector, event list, filtering, timezone
 6. **Medal Tracker:** Leaderboard, animated counters, country drill-down
 7. **Data Viz:** Charts, medal map, athlete profiles
-8. **Command Palette:** Search integration
-9. **Scroll Storytelling:** Long-form narrative section
-10. **Polish:** Micro-interactions, loading states, easter eggs, remaining country themes
-11. **Responsive:** Mobile optimization pass across all sections
+8. **Search:** Wire command palette to Perplexity
+9. **AI Layer:** Claude insight buttons + companion chat
+10. **Polish:** Micro-interactions, loading states, remaining country themes, easter eggs, responsive pass
 
 **Per-section checklist:**
 - [ ] Component renders correctly
@@ -1242,17 +1219,10 @@ This project is designed to be built incrementally via Claude Code while the dev
 
 ---
 
-## VI. GUIDING MANTRAS
-
-1. **"Creating software that makes people feel something."** — Rauno Freiberg
-2. **"Perfection is achieved not when there is nothing left to add, but when there is nothing left to remove."** — Antoine de Saint-Exupéry
-3. **Data should whisper, not shout.**
-4. **Every pixel is a decision. Make it on purpose.**
-5. **The best interface is one you don't notice — until you do, and then you can't stop admiring it.**
-
 ---
 
-*Constitution v1.0 — Olympus Project — GalaxyCo.ai — February 2026*
+*Constitution v1.1 — Olympus Project — GalaxyCo.ai — February 2026*
+*Revised: Pivoted from editorial/magazine to data-first tracking hub.*
 
 
 ---
